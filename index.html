@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hantverk – stolárstvo na mieru, Bratislava</title>
+<meta name="description" content="Hantverk je stolárstvo z Bratislavy, ktoré vyrába nábytok na mieru pre byty, domy a komerčné priestory.">
+<link rel="icon" href="assets/brand/Hantverk_Favicon2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Jost:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/hantverk.css">
+<style>
+/* ---------- header ---------- */
+.hdr { position: sticky; top: 0; z-index: 50; background: rgba(238,240,240,.92); backdrop-filter: saturate(1.2) blur(10px); -webkit-backdrop-filter: saturate(1.2) blur(10px); }
+.hdr .wrap { height: var(--header-h); display: flex; align-items: center; gap: 32px; }
+.logo { display: block; width: 132px; flex: none; }
+.logo img { width: 100%; height: auto; }
+.nav { display: flex; gap: 22px; margin-right: auto; }
+.nav a { text-decoration: none; font-size: .9rem; color: var(--ink-2); padding: 6px 0; position: relative; }
+.nav a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: 0; height: 1px; background: var(--orange); transition: right .25s var(--ease); }
+.nav a:hover, .nav a.on { color: var(--ink); }
+.nav a:hover::after, .nav a.on::after { right: 0; }
+.hdr-tel { font-size: .9rem; text-decoration: none; font-weight: 600; white-space: nowrap; }
+.burger { display: none; width: 44px; height: 44px; border: 0; background: none; cursor: pointer; position: relative; }
+.burger span, .burger::before, .burger::after { content: ""; position: absolute; left: 11px; right: 11px; height: 1.5px; background: var(--ink); transition: transform .25s, opacity .25s; }
+.burger::before { top: 16px; } .burger span { top: 21px; } .burger::after { top: 26px; }
+.menu-open .burger::before { transform: translateY(5px) rotate(45deg); }
+.menu-open .burger span { opacity: 0; }
+.menu-open .burger::after { transform: translateY(-5px) rotate(-45deg); }
+.mnav { display: none; }
+@media (max-width: 1180px) { .nav, .hdr-tel { display: none; } .burger { display: block; } .hdr .wrap { gap: 12px; } .hdr .btn { margin-left: auto; } }
+@media (max-width: 1180px) {
+  .mnav { display: block; position: fixed; inset: var(--header-h) 0 0; background: var(--paper); z-index: 49; padding: 24px var(--gutter) 120px; transform: translateY(-8px); opacity: 0; visibility: hidden; transition: .25s var(--ease); overflow: auto; }
+  .menu-open .mnav { opacity: 1; visibility: visible; transform: none; }
+  .mnav a { display: block; font-family: var(--f-display); font-size: 2rem; color: var(--orange); text-decoration: none; padding: 10px 0; }
+  .mnav .small { margin-top: 24px; font-family: var(--f-text); }
+}
+@media (max-width: 520px) { .logo { width: 112px; } .hdr .btn { min-height: 40px; padding: 0 14px; font-size: .85rem; } }
+
+/* ---------- hero ---------- */
+.hero { padding: clamp(48px, 8vw, 128px) 0 var(--section-y); }
+.hero-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--s4); align-items: center; }
+.hero-copy { grid-column: 1 / 7; }
+.hero-copy h1 { margin-bottom: var(--s6); }
+.hero-copy .lead { margin-bottom: var(--s6); }
+.cta-row { display: flex; flex-wrap: wrap; gap: 16px; }
+.hero-media { grid-column: 8 / -1; margin: 0; }
+.hero-media .ph { aspect-ratio: 4 / 5.4; }
+@media (max-width: 900px) {
+  .hero-copy, .hero-media { grid-column: 1 / -1; }
+  /* celá fotka od okraja po okraj, hneď pod hlavičkou, najviac na výšku obrazovky */
+  .hero { padding-top: 0; }
+  .hero-media { order: -1; margin: 0 calc(-1 * var(--gutter)); }
+  .hero-media .ph { aspect-ratio: 3 / 4; max-height: calc(100svh - 68px); }
+  .hero-media img { object-position: 50% 62%; }
+  .hero-copy { padding-top: var(--s6); }
+}
+
+/* ---------- marek a tomáš ---------- */
+.team { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--s4); align-items: center; }
+.team-media { grid-column: 2 / 6; margin: 0; }
+.team-media .ph { aspect-ratio: 3 / 4; }
+.team-copy { grid-column: 7 / 12; }
+.team-copy h2 { margin-bottom: var(--s6); }
+.team-copy .lead + .lead { margin-top: var(--s4); }
+@media (max-width: 900px) {
+  .team-media, .team-copy { grid-column: 1 / -1; }
+  .team { row-gap: var(--s6); }
+  .team-media { width: min(72%, 340px); }
+}
+
+/* ---------- výroba ---------- */
+.make { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--s4); align-items: center; }
+.make-copy { grid-column: 1 / 6; }
+.make-copy h2 { margin-bottom: var(--s6); }
+.make-media { grid-column: 7 / -1; margin: 0; }
+.make-media .ph { aspect-ratio: 4 / 3.05; }
+@media (max-width: 900px) {
+  .make-copy, .make-media { grid-column: 1 / -1; }
+  .make { row-gap: var(--s6); }
+  .make-media { order: -1; }
+}
+
+/* ---------- situácie ---------- */
+/* štyri situácie vľavo v mriežke 2 × 2, nadpis vpravo */
+.sol { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--s4); align-items: center; }
+.sol-title { grid-column: 8 / -1; grid-row: 1; }
+.sits { grid-column: 1 / 7; grid-row: 1; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 4.5vw, 72px) clamp(32px, 3.5vw, 56px); }
+.sit { display: flex; flex-direction: column; gap: 18px; }
+.sit q { font-family: var(--f-display); font-size: 1.45rem; line-height: 1.2; quotes: "„" "“"; color: var(--ink); }
+.sit p { color: var(--ink-2); font-size: .975rem; flex: 1; }
+@media (max-width: 1000px) { .sol-title, .sits { grid-column: 1 / -1; grid-row: auto; } .sol { row-gap: var(--s7); } }
+@media (max-width: 640px) { .sits { grid-template-columns: 1fr; row-gap: 48px; } }
+
+/* ---------- prečo ---------- */
+.why { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--s4); align-items: center; }
+/* nadpis a text pod ním vľavo, fotka vpravo */
+.why-copy { grid-column: 1 / 7; }
+.why-copy h2 { margin-bottom: var(--s6); }
+.why-copy .lead { max-width: 26em; margin: 0; }
+.why-media { grid-column: 8 / 12; margin: 0; }
+.why-media .ph { aspect-ratio: 2 / 3; }
+@media (max-width: 900px) {
+  .why-copy, .why-media { grid-column: 1 / -1; }
+  .why { row-gap: var(--s6); }
+  .why-media { width: min(72%, 340px); }
+}
+
+/* ---------- postup ---------- */
+/* kroky vľavo v mriežke 2 × n ako pri Riešeniach, nadpis vpravo */
+.flow { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--s4); align-items: center; }
+.flow-title { grid-column: 8 / -1; grid-row: 1; }
+.steps { grid-column: 1 / 7; grid-row: 1; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 4.5vw, 72px) clamp(32px, 3.5vw, 56px); }
+.step { display: flex; flex-direction: column; gap: 18px; }
+.step h3 { margin: 0; font-family: var(--f-display); font-size: 1.45rem; font-weight: 400; line-height: 1.2; color: var(--ink); }
+.step p { color: var(--ink-2); font-size: .975rem; margin: 0; }
+@media (max-width: 1000px) { .flow-title, .steps { grid-column: 1 / -1; grid-row: auto; } .flow { row-gap: var(--s7); } }
+@media (max-width: 640px) { .steps { grid-template-columns: 1fr; row-gap: 48px; } }
+/* ---------- referencie ---------- */
+.refs-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: clamp(32px, 4vw, 56px); }
+.refs-ctrl { display: flex; align-items: center; gap: 12px; }
+.refs-count { font-variant-numeric: tabular-nums; margin-right: 20px; font-size: 1.05rem; white-space: nowrap; }
+.refs-ctrl button { width: 52px; height: 52px; display: grid; place-items: center; background: none; border: 0; padding: 0; color: var(--orange); cursor: pointer; transition: color .2s, opacity .2s, transform .2s var(--ease); }
+.refs-ctrl button svg { width: 34px; height: 34px; }
+.refs-ctrl button:hover:not(:disabled) { color: var(--orange-deep); }
+.refs-ctrl .prev:hover:not(:disabled) { transform: translateX(-3px); }
+.refs-ctrl .next:hover:not(:disabled) { transform: translateX(3px); }
+.refs-ctrl button:disabled { opacity: .25; cursor: default; }
+.refs-track { display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; overscroll-behavior-x: contain; }
+.refs-track::-webkit-scrollbar { display: none; }
+.ref { all: unset; box-sizing: border-box; flex: 0 0 calc((100% - 3 * 24px) / 3.4); scroll-snap-align: start; cursor: pointer; display: flex; flex-direction: column; gap: 14px; }
+.ref .ph { aspect-ratio: 4 / 5; }
+.ref .go { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 1; display: flex; justify-content: space-between; align-items: center; background: var(--paper); padding: 14px 16px; font-size: .95rem; font-weight: 500; opacity: 0; transform: translateY(8px); transition: opacity .25s var(--ease), transform .25s var(--ease); }
+.ref:hover .go, .ref:focus-visible .go { opacity: 1; transform: none; }
+.ref:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
+.ref h3 { font-size: 1.35rem; margin-top: 6px; }
+.ref p { margin: -6px 0 0; font-size: .95rem; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+@media (max-width: 1000px) { .ref { flex-basis: calc((100% - 24px) / 2.3); } }
+@media (max-width: 560px) {
+  .ref { flex-basis: 82%; }
+  .refs-track { gap: 16px; }
+  .refs-head { gap: 12px; }
+  .refs-head h2 { font-size: 2.1rem; }
+  .refs-count { margin-right: 4px; font-size: .9rem; }
+  .refs-ctrl { gap: 6px; flex: none; }
+  .refs-ctrl button { width: 40px; height: 40px; }
+}
+
+/* ---------- recenzie ---------- */
+/* posúvanie do strany ako pri referenciách */
+.revs { gap: clamp(32px, 4vw, 64px); }
+.rev { flex: 0 0 calc((100% - 2 * clamp(32px, 4vw, 64px)) / 3.25); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; }
+blockquote { margin: 0; }
+.quote { font-family: var(--f-display); font-size: 1.35rem; line-height: 1.3; }
+.quote cite { display: block; margin-top: 12px; font: 400 var(--t-small)/1.4 var(--f-text); color: var(--ink-2); font-style: normal; }
+.rev .quote { font-size: 1.2rem; }
+.rev .stars { color: var(--orange); letter-spacing: 3px; font-size: .9rem; }
+@media (max-width: 1000px) { .rev { flex-basis: calc((100% - clamp(32px, 4vw, 64px)) / 2.2); } }
+@media (max-width: 560px) { .revs { gap: 24px; } .rev { flex-basis: 84%; } }
+
+/* ---------- faq ---------- */
+.faq { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--s4); }
+.faq-head { grid-column: 1 / 5; }
+.faq-head h2 { position: sticky; top: calc(var(--header-h) + 32px); }
+.faq .acc { grid-column: 6 / -1; }
+@media (max-width: 900px) { .faq-head, .faq .acc { grid-column: 1 / -1; } .faq { row-gap: var(--s6); } }
+
+/* ---------- kontakt ---------- */
+.contact { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--s4); }
+.contact-title { grid-column: 1 / 9; margin: 0 0 32px; }
+.contact-form { grid-column: 1 / 8; }
+.form { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 24px; }
+.form .full { grid-column: 1 / -1; }
+.form-foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 20px; justify-content: space-between; }
+.form-foot p { font-size: .82rem; color: var(--ink-2); max-width: 30em; margin: 0; }
+.form-ok { display: none; grid-column: 1 / -1; padding: 28px; background: var(--white); border-left: 3px solid var(--orange); }
+.form.sent .form-ok { display: block; }
+.form.sent > :not(.form-ok) { display: none; }
+.contact-side { grid-column: 9 / -1; display: grid; gap: 0; align-content: start; }
+.contact-side > div { padding: 0 0 18px; }
+.ci { display: flex; align-items: center; gap: 14px; }
+.ci svg { flex: none; width: 24px; height: 24px; fill: none; stroke: var(--orange); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.contact-side .mid { font-family: var(--f-display); font-size: 1.35rem; line-height: 1.3; text-decoration: none; display: inline-block; margin: 0; }
+.contact-side a.mid:hover { color: var(--orange-deep); }
+.contact-side .map { margin-top: 24px; }
+.map { aspect-ratio: 16 / 10; background: var(--paper-2); position: relative; overflow: hidden; margin-top: 16px; display: block; text-decoration: none; }
+.map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.map span { position: absolute; left: 12px; bottom: 12px; font-size: .8rem; background: var(--paper); padding: 6px 10px; font-weight: 600; }
+@media (max-width: 960px) { .contact-title, .contact-form, .contact-side { grid-column: 1 / -1; } .contact { row-gap: var(--s6); } .contact-title { margin: 0; } }
+@media (max-width: 560px) { .form { grid-template-columns: 1fr; } }
+
+/* ---------- footer ---------- */
+.ftr { background: var(--paper); color: var(--ink); padding: var(--s8) 0 var(--s5); }
+.ftr-cols { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--s4); font-size: .9rem; color: var(--ink-2); }
+.ftr-cols h4 { margin: 0 0 12px; font: 600 .75rem/1 var(--f-text); letter-spacing: .1em; text-transform: uppercase; color: var(--mute); }
+.ftr-cols a { color: var(--ink); text-decoration: none; display: block; padding: 3px 0; }
+.ftr-cols a:hover { color: var(--orange); }
+.ftr-mark { margin-top: var(--s8); }
+.ftr-mark img { width: 100%; height: auto; }
+.ftr-base { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 24px; font-size: .8rem; color: var(--mute); }
+@media (max-width: 860px) { .ftr-cols { grid-template-columns: 1fr 1fr; row-gap: 32px; } .ftr-cols > :first-child { grid-column: 1 / -1; } }
+
+/* ---------- mobilná lišta ---------- */
+.mbar { display: none; }
+@media (max-width: 760px) {
+  .mbar { display: grid; grid-template-columns: 1fr 1.4fr; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; transform: translateY(110%); transition: transform .3s var(--ease); padding: 8px; padding-bottom: calc(8px + env(safe-area-inset-bottom)); gap: 8px; background: rgba(238,240,240,.95); }
+  .mbar.show { transform: none; }
+  .mbar .btn { min-height: 48px; }
+  body { padding-bottom: 72px; }
+}
+
+/* ---------- modal realizácie ---------- */
+.modal { position: fixed; inset: 0; z-index: 100; background: var(--paper); overflow: auto; opacity: 0; visibility: hidden; transition: opacity .25s var(--ease), visibility .25s; }
+.modal.open { opacity: 1; visibility: visible; }
+.modal-bar { position: sticky; top: 0; z-index: 2; background: rgba(238,240,240,.94); backdrop-filter: blur(8px); }
+.modal-bar .wrap { height: var(--header-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.modal-close { all: unset; cursor: pointer; display: inline-flex; gap: 10px; align-items: center; font-weight: 600; font-size: .95rem; }
+.modal-close:hover { color: var(--orange-deep); }
+.modal-nav { display: flex; gap: 8px; }
+.modal-head { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--s4); padding: var(--s7) 0 var(--s6); }
+.modal-head .t { grid-column: 1 / 7; }
+.modal-head .t h2 { margin-top: 16px; }
+.modal-head .d { grid-column: 8 / -1; align-self: end; }
+.modal-head .d p { color: var(--ink-2); font-size: 1.05rem; }
+.modal-gal { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding-bottom: var(--s7); }
+.modal-gal .ph:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
+.modal-gal .ph { aspect-ratio: 4 / 5; }
+.modal-gal .ph img { cursor: zoom-in; }
+.modal-cta { display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; justify-content: space-between; padding: 32px 0 var(--s8); }
+.modal-cta .h3 { color: var(--orange); }
+@media (max-width: 900px) { .modal-head .t, .modal-head .d { grid-column: 1 / -1; } .modal-gal { grid-template-columns: 1fr; } .modal-gal .ph, .modal-gal .ph:first-child { aspect-ratio: 4 / 3.4; } }
+body.lock { overflow: hidden; }
+
+/* ---------- lightbox ---------- */
+.lb { position: fixed; inset: 0; z-index: 200; background: rgba(17,17,17,.96); display: none; align-items: center; justify-content: center; }
+.lb.open { display: flex; }
+.lb img { max-width: 92vw; max-height: 86vh; object-fit: contain; }
+.lb button { all: unset; cursor: pointer; position: absolute; color: var(--paper); font-size: 1rem; font-weight: 600; padding: 14px; }
+.lb .x { top: 12px; right: 16px; }
+.lb .p { left: 12px; top: 50%; transform: translateY(-50%); font-size: 2rem; }
+.lb .n { right: 12px; top: 50%; transform: translateY(-50%); font-size: 2rem; }
+.lb .c { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; color: rgba(238,240,240,.7); font-size: .85rem; }
+
+/* ---------- prepínač prototypu ---------- */
+.proto { position: fixed; left: 16px; bottom: 16px; z-index: 70; display: flex; gap: 10px; align-items: center; background: var(--ink); color: var(--paper); padding: 8px 8px 8px 14px; font-size: .78rem; box-shadow: 0 6px 24px rgba(0,0,0,.18); }
+.proto button { all: unset; cursor: pointer; background: var(--orange); color: var(--ink); padding: 6px 10px; font-weight: 600; }
+.proto a { color: var(--orange); }
+@media (max-width: 760px) { .proto { bottom: 84px; left: 8px; padding: 6px; font-size: .72rem; } .proto #proto-t, .proto .pl { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="hdr" id="top">
+  <div class="wrap">
+    <a href="#top" class="logo" aria-label="Hantverk – úvod"><img src="assets/brand/Asset-1.svg" alt="Hantverk"></a>
+    <nav class="nav" aria-label="Hlavná navigácia">
+      <a href="#tim">O nás</a>
+      <a href="#riesenia">Riešenia</a>
+      <a href="#postup">Postup</a>
+      <a href="#otazky">Otázky</a>
+    </nav>
+    <a class="hdr-tel num" href="tel:+421907310039">+421 907 310 039</a>
+    <a class="btn btn--sm" href="#kontakt">Mám záujem</a>
+    <button class="burger" aria-label="Menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+<div class="mnav" aria-label="Mobilná navigácia">
+  <a href="#tim">O nás</a>
+      <a href="#riesenia">Riešenia</a>
+  <a href="#postup">Postup</a>
+  <a href="#otazky">Otázky</a>
+  <p class="small">Marek, Po–Pi 8:00–17:00<br><a class="link num" style="font-size:1rem;border:0;font-family:var(--f-text);display:inline;padding:0" href="tel:+421907310039">+421 907 310 039</a></p>
+</div>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <h1>Premyslené do&nbsp;posledného spoja.</h1>
+        <p class="lead">Hantverk je stolárstvo z Bratislavy, ktoré vyrába nábytok na mieru pre byty, domy a komerčné priestory. Veríme, že dobrý nábytok vzniká z porozumenia priestoru, poctivého remesla a kvalitných materiálov. Navrhujeme ho s citom pre detail a vyrábame s dôrazom na presnosť.</p>
+        <div class="cta-row">
+          <a class="btn" href="#kontakt">Mám záujem</a>
+        </div>
+      </div>
+      <figure class="hero-media">
+        <div class="ph"><img src="assets/web/Hantverk-hero-ostrovcek.jpg" alt="Okrúhly sivý kuchynský ostrovček pred stenou z drevenej dyhy, v pozadí červené presklené dvere" fetchpriority="high"></div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SITUÁCIE ============ -->
+<!-- ============ MAREK A TOMÁŠ ============ -->
+<section class="section" id="tim">
+  <div class="wrap team">
+    <figure class="team-media rv">
+      <div class="ph"><img src="assets/web/Hantverk-Marek-Tomas.jpg" alt="Marek a Tomáš v dielni pred CNC strojom" loading="lazy"></div>
+    </figure>
+    <div class="team-copy">
+      <h2 class="rv">Marek a&nbsp;Tomáš</h2>
+      <p class="lead rv">Marek je absolvent Stavebnej fakulty Slovenskej technickej univerzity a kombinuje prax v architektonickom ateliéri s projektovým manažmentom na developerských projektoch. Vo firme má na starosti komunikáciu s klientmi, vypracovanie návrhov, projektovú dokumentáciu a koordináciu s architektmi a stavbou.</p>
+      <p class="lead rv">Tomáš zdedil remeslo po otcovi. V stolárskej dielni sa pohybuje už viac ako 15 rokov a špecializuje sa na riadenie výroby a montáže.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VÝROBA ============ -->
+<section class="section" id="vyroba">
+  <div class="wrap make">
+    <div class="make-copy">
+      <h2 class="rv">Výroba</h2>
+      <p class="lead rv">Návrh, výkresy aj výrobu máme pod jednou strechou. Návrh a projekciu robíme v pokročilých 2D a 3D softvéroch, takže riešenie uvidíte skôr, než sa začne rezať. V tíme máme štyroch vlastných remeselníkov, každého s viac ako desaťročnou praxou. Vyrábame vo výrobnej hale s rozlohou 500 m² na poslednej generácii CNC a obrábacích strojov.</p>
+    </div>
+    <figure class="make-media rv">
+      <div class="ph"><img src="assets/web/Hantverk-Vyroba.jpg" alt="Výrobná hala Hantverk s CNC strojom a rozpracovanými skrinkami" loading="lazy"></div>
+    </figure>
+  </div>
+</section>
+
+<section class="section" id="riesenia">
+  <div class="wrap sol">
+    <h2 class="sol-title rv">Nehľadáte skrinky. Riešite priestor.</h2>
+    <div class="sits">
+      <article class="sit rv">
+        <q>Kúpili sme starší byt a ide sa rekonštruovať.</q>
+        <p>Pri rekonštrukcii sa zapojíme už v štádiu projektu. Spolu so stavbou zosúladíme rozvody, rozmery aj detaily, aby na konci všetko do seba presne zapadlo.</p>
+      </article>
+      <article class="sit rv">
+        <q>Malý byt, potrebujeme každý centimeter.</q>
+        <p>V malom priestore rozhoduje každý detail. Navrhneme nábytok, ktorý využije aj ťažko dostupné miesta a pritom nechá byt vzdušný a príjemný na bývanie.</p>
+      </article>
+      <article class="sit rv">
+        <q>Architekt navrhol interiér, kto ho vyrobí?</q>
+        <p>Návrh architekta prevedieme do výroby so všetkými detailmi. Pred výrobou pripravíme dielenské výkresy, ktoré spolu skontrolujeme a schválime.</p>
+      </article>
+      <article class="sit rv">
+        <q>Drevo so sklom, oceľou alebo kameňom.</q>
+        <p>Nemusíte koordinovať viacerých remeselníkov. Výrobu aj spojenie rôznych materiálov máme na starosti my, od návrhu až po finálnu montáž.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PREČO ============ -->
+<section class="section">
+  <div class="wrap why">
+    <div class="why-copy">
+      <h2 class="rv">Sme partner pre architektúru a dizajn, ktorý Vám ponúka riešenia.</h2>
+      <p class="lead rv">Ak ste architekt alebo máte podklady od Vášho architekta, pošlite nám ich a my sa postaráme o ich presnú realizáciu. Ak začínate od nuly, vypracujeme Vám návrh, ktorý naplní všetky Vaše očakávania.</p>
+    </div>
+    <figure class="why-media rv">
+      <div class="ph"><img src="assets/web/Hantverk-Partner.jpg" alt="Zrkadlová skriňa v svetlom byte so smrekovou podlahou a klenutým stropom" loading="lazy"></div>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ POSTUP ============ -->
+<section class="section" id="postup">
+  <div class="wrap flow">
+    <h2 class="flow-title rv">Od zadania po montáž</h2>
+    <ol class="steps">
+      <li class="step rv"><h3>Kontaktujte nás</h3><p>Cez formulár, e-mailom alebo nám zavolajte.</p></li>
+      <li class="step rv"><h3>Návrh a cenová ponuka</h3><p>Do 1 týždňa Vám vypracujeme návrh a cenovú ponuku.</p></li>
+      <li class="step rv"><h3>Výroba a montáž</h3><p>Výroba a montáž trvá zvyčajne do 8 týždňov od odsúhlasenia výkresovej dokumentácie.</p></li>
+      <li class="step rv"><h3>Odovzdanie a záruka</h3><p>Po odovzdaní Vám ponúkame bezplatný záručný servis 5 rokov.</p></li>    </ol>
+  </div>
+</section>
+
+<!-- ============ REFERENCIE ============ -->
+<section class="section" id="referencie">
+  <div class="wrap">
+    <div class="refs-head">
+      <h2 class="rv">Referencie</h2>
+      <div class="refs-ctrl">
+        <button class="prev" id="refs-prev" aria-label="Predošlá referencia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="next" id="refs-next" aria-label="Ďalšia referencia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+    <div class="refs-track" id="refs-track"></div>
+  </div>
+</section>
+<!-- ============ RECENZIE ============ -->
+<section class="section" id="recenzie">
+  <div class="wrap">
+    <div class="refs-head">
+      <h2 class="rv">Čo hovoria klienti a architekti</h2>
+      <div class="refs-ctrl">
+        <span class="refs-count" id="revs-count" aria-live="polite">01 / 01</span>
+        <button class="prev" id="revs-prev" aria-label="Predošlá recenzia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="next" id="revs-next" aria-label="Ďalšia recenzia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+    <div class="refs-track revs" id="revs-track">
+      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px">„Starý byt mal krivé steny a málo miesta. Marek prišiel s riešením, na ktoré by sme sami neprišli, a skrine sedia na milimeter aj pod šikmým stropom.“</blockquote></div><figcaption class="small muted"><span class="tbd">Meno klienta</span> · Staré Mesto · rekonštrukcia bytu</figcaption></figure>
+      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px">„Vedeli sme presnú cenu aj termín ešte pred podpisom a obe platili. Montáž trvala dva dni a chlapci po sebe všetko upratali.“</blockquote></div><figcaption class="small muted"><span class="tbd">Meno klienta</span> · Ružinov · kuchyňa a šatník</figcaption></figure>
+      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px">„Dielenské výkresy dostanem na schválenie skôr, než sa čokoľvek reže. Presne to od stolára pri náročnom detaile potrebujem.“</blockquote></div><figcaption class="small muted"><span class="tbd">Meno architekta</span> · <span class="tbd">ateliér</span> · interiér bytu</figcaption></figure>
+      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px"><span class="tbd">„Do malej predsiene sme nič hotové nevedeli nájsť. Teraz tam je skriňa, lavica aj botník a stále sa tam dá prejsť.“</span></blockquote></div><figcaption class="small muted"><span class="tbd">Meno klienta</span> · Petržalka · predsieň</figcaption></figure>
+      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px"><span class="tbd">„Oceňujem, že sa s nimi dá riešiť detail priamo pri výkrese. Skrytá zárubňa vyšla presne tak, ako sme ju nakreslili.“</span></blockquote></div><figcaption class="small muted"><span class="tbd">Meno architekta</span> · <span class="tbd">ateliér</span> · rodinný dom</figcaption></figure>
+      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px"><span class="tbd">„Kuchyňa nám slúži už tretí rok a všetko drží ako na začiatku. Keď bolo treba doladiť pánt, prišli do týždňa.“</span></blockquote></div><figcaption class="small muted"><span class="tbd">Meno klienta</span> · Nové Mesto · kuchyňa</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KONTAKT ============ -->
+<section class="section" id="kontakt">
+  <div class="wrap contact">
+    <h2 class="contact-title">Ozvite sa nám, o&nbsp;zvyšok sa postaráme my&nbsp;:)</h2>
+    <div class="contact-form">
+      <form class="form" id="form" novalidate>
+        <div class="field"><label for="f-name">Meno</label><input class="input" id="f-name" placeholder="Jana Nováková" autocomplete="name" required></div>
+        <div class="field"><label for="f-tel">Telefón</label><input class="input" id="f-tel" type="tel" placeholder="+421 9xx xxx xxx" autocomplete="tel"></div>
+        <div class="field full"><label for="f-mail">E-mail</label><input class="input" id="f-mail" type="email" placeholder="jana@email.sk" autocomplete="email" required></div>
+        <div class="field full"><label for="f-sit">Vaša situácia</label>
+          <select class="select" id="f-sit">
+            <option>Rekonštrukcia bytu alebo domu</option>
+            <option>Malý byt, potrebujem viac priestoru</option>
+            <option>Mám projekt od architekta</option>
+            <option>Kombinácia dreva so sklom, oceľou alebo kameňom</option>
+            <option>Interiér prevádzky</option>
+            <option>Iné</option>
+          </select>
+        </div>
+        <div class="field full"><label for="f-msg">Čo chcete riešiť</label><textarea class="textarea" id="f-msg" placeholder="Napr. kuchyňa a šatník v 2-izbovom byte, rekonštrukcia od marca"></textarea></div>
+        <div class="field full"><label>Pôdorys alebo fotky <span class="hint">PDF, JPG – nepovinné</span></label>
+          <label class="file" for="f-file"><span class="btn btn--ghost btn--sm" aria-hidden="true">Vybrať súbor</span><span class="small muted" id="f-file-name">Zatiaľ nič nevybrané</span></label>
+          <input id="f-file" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple hidden>
+        </div>
+        <div class="form-foot">
+          <p>Odoslaním súhlasíte so spracovaním údajov na účel cenovej ponuky. <a class="link" href="#" onclick="return false">Ochrana osobných údajov</a></p>
+          <button class="btn" type="submit">Odoslať pôdorys <span class="arr">→</span></button>
+        </div>
+        <div class="form-ok" role="status"><h3 class="h3" style="color:var(--orange);margin-bottom:8px">Ďakujeme, pôdorys máme.</h3><p class="muted">Ozveme sa do <span class="tbd">5</span> pracovných dní s prvým návrhom riešenia. (Prototyp – formulár nič neodosiela.)</p></div>
+      </form>
+    </div>
+    <aside class="contact-side">
+      <div class="ci"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg><a class="mid num" href="tel:+421907310039">+421 907 310 039</a></div>
+      <div class="ci"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg><a class="mid" href="mailto:info@hantverk.sk">info@hantverk.sk</a></div>
+      <div><div class="ci"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><p class="mid">Cukrová 14, Bratislava</p></div>
+        <a class="map" href="https://maps.google.com/?q=Cukrov%C3%A1+14,+Bratislava" target="_blank" rel="noopener" aria-label="Otvoriť mapu">
+          <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g fill="none" stroke="#c9cdcd" stroke-width="10"><path d="M-10 70 L420 40"/><path d="M-10 190 L420 160"/><path d="M90 -10 L130 260"/><path d="M290 -10 L250 260"/></g><g fill="none" stroke="#d8dbdb" stroke-width="4"><path d="M-10 130 L420 100"/><path d="M190 -10 L200 260"/><path d="M340 -10 L360 260"/><path d="M30 -10 L50 260"/></g><circle cx="196" cy="118" r="9" fill="#FF6600"/><circle cx="196" cy="118" r="22" fill="none" stroke="#FF6600" stroke-width="1.5"/></svg>
+          <span>Otvoriť v Mapách ↗</span>
+        </a>
+      </div>
+    </aside>
+  </div>
+</section>
+<!-- ============ FAQ ============ -->
+<section class="section" id="otazky">
+  <div class="wrap faq">
+    <div class="faq-head"><h2>Často sa pýtate</h2></div>
+    <div class="acc">
+      <details open><summary>Koľko stojí kuchyňa na mieru v Bratislave?<span class="pm"></span></summary><div class="acc-body">Kuchyne na mieru robíme od 9 900 € s DPH, výrobou a montážou. Cenu najviac ovplyvní dĺžka linky, materiál dvierok, pracovná doska a kovanie. Presnú cenu dostanete po bezplatnom zameraní.</div></details>
+      <details><summary>Ako dlho trvá výroba a montáž?<span class="pm"></span></summary><div class="acc-body">Výroba trvá 6–8 týždňov od schválenia dielenskej dokumentácie. Montáž 1–2 týždne.</div></details>
+      <details><summary>Je zameranie a návrh spoplatnený?<span class="pm"></span></summary><div class="acc-body">Nie. Zameranie a návrh dispozície sú súčasťou zákazky. Platíte až pri objednávke výroby, zálohu <span class="tbd">50</span> %.</div></details>
+      <details><summary>Viete pracovať podľa projektu architekta?<span class="pm"></span></summary><div class="acc-body">Áno. Výkresy prejdeme s architektom, technické detaily vyriešime vopred a pred výrobou pošleme dielenské výkresy na schválenie. Takto sme pracovali napríklad s ateliérmi gmb, Grau a TOITO Architekti.</div></details>
+      <details><summary>Zvládnete starý dom so šikmými stenami?<span class="pm"></span></summary><div class="acc-body">Áno, staré byty a domy sú naša špecialita. Marek je stavebný inžinier, takže krivé steny, staré rozvody či trámy zohľadníme už pri zameraní.</div></details>
+      <details><summary>Kde pôsobíte a akú dávate záruku?<span class="pm"></span></summary><div class="acc-body">Pracujeme v Bratislave a okolí, väčšie zákazky aj inde na Slovensku. Na výrobu a montáž dávame záruku <span class="tbd">5</span> rokov.</div></details>
+      <details><summary>Stihnete termín k sťahovaniu?<span class="pm"></span></summary><div class="acc-body">Ak nám dáte vedieť včas, áno. Termín dohodneme pri objednávke a plánujeme výrobu tak, aby sedel s rekonštrukciou.</div></details>
+      <details><summary>Robíte aj interiéry pre prevádzky?<span class="pm"></span></summary><div class="acc-body">Áno, napríklad hostel, infopult alebo prebaľovňu. Pri prevádzkach navrhujeme odolné materiály a jednoduchú údržbu.</div></details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-cols">
+      <div><h4>Hantverk</h4><p style="margin:0">Remeselné stolárstvo, Bratislava</p></div>
+      <div><h4>Firma</h4>em, s.r.o.<br>Blumentálska 4, 811 07 Bratislava<br>IČO 54296692<br>IČ DPH SK2121700394</div>
+      <div><h4>Kontakt</h4><a class="num" href="tel:+421907310039">+421 907 310 039</a><a href="mailto:info@hantverk.sk">info@hantverk.sk</a></div>
+      <div><h4>Sledujte</h4><a href="#" onclick="return false">Instagram</a><a href="#" onclick="return false">Google profil</a><a href="#" onclick="return false">Ochrana osobných údajov</a></div>
+    </div>
+    <div class="ftr-mark"><img src="assets/brand/Asset-1.svg" alt="Hantverk"></div>
+    <div class="ftr-base"><span>© 2026 em, s.r.o.</span><a href="#top" style="color:inherit;text-decoration:none">Hore ↑</a></div>
+  </div>
+</footer>
+
+<div class="mbar" id="mbar">
+  <a class="btn btn--ghost" href="tel:+421907310039">Zavolať</a>
+  <a class="btn" href="#kontakt">Mám záujem</a>
+</div>
+
+<!-- modal realizácie -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title" hidden>
+  <div class="modal-bar"><div class="wrap">
+    <button class="modal-close" id="m-close">← Späť na realizácie</button>
+    <div class="modal-nav"><button class="btn btn--ghost btn--sm" id="m-prev" aria-label="Predošlý projekt">←</button><button class="btn btn--ghost btn--sm" id="m-next" aria-label="Ďalší projekt">→</button></div>
+  </div></div>
+  <div class="wrap">
+    <div class="modal-head">
+      <div class="t"><p class="label label--orange" id="m-tag"></p><h2 id="m-title"></h2></div>
+      <div class="d"><p id="m-desc"></p><p class="small muted" id="m-src">Text z hantverk.sk – na redakciu.</p></div>
+    </div>
+    <div class="modal-gal" id="m-gal"></div>
+    <div class="modal-cta"><p class="h3">Máte podobný priestor?</p><a class="btn" href="#kontakt" id="m-cta">Mám záujem</a></div>
+  </div>
+</div>
+
+<div class="lb" id="lb" aria-hidden="true"><img id="lb-img" alt=""><button class="x" id="lb-x">Zavrieť ✕</button><button class="p" id="lb-p" aria-label="Predošlá">‹</button><button class="n" id="lb-n" aria-label="Ďalšia">›</button><div class="c" id="lb-c"></div></div>
+
+<div class="proto" id="proto"><span class="pl">Prototyp ·</span> <span id="proto-t">údaje na overenie zvýraznené</span> <button id="proto-b">Skryť</button></div>
+
+<script>
+const IMG = 'assets/web/';
+const range = (p, ns, ext = 'jpg') => ns.map(n => `${IMG}${p}${n}.${ext}`);
+const P = [
+  { id: 'zahradnicka', name: 'Záhradnícka', tag: 'S architektom · Grau', tags: 'architekt rekonstrukcia materialy',
+    line: 'Staromestský byt s ostrovom a nábytkom z jaseňovej dyhy podľa Grau architects.',
+    desc: 'Opäť ďalšia rekonštrukcia staromestského bytu, tentokrát pod taktovkou Grau architects. Architekti otvorili dispozíciu a posunuli byt o úroveň vyššie. Obklady, kuchyňa a skrine z jaseňovej dyhy doplnené nerezovými prvkami a atypickým nábytkom. Ostrov ako dominantný prvok celého interiéru potvrdzuje, že funkcia a estetika sa nemusia vylučovať. Foto: Matej Hakar.',
+    imgs: range('Hantverk-Zahradnicka', [1, 5, 2, 3, 4, 6]) },
+  { id: 'blumentalska', name: 'Blumentálska', tag: 'Rekonštrukcia', tags: 'rekonstrukcia',
+    line: 'Šesťmetrová linka a stredový objekt: z jednej strany knižnica, z druhej šatník.',
+    desc: 'Trojizbový byt po kompletnej rekonštrukcii. Šesť metrov dlhá kuchynská linka, ktorá prechádza do obývacej izby. Stredový objekt, ktorý je z obývačkovej strany knižnica a z chodbovej strany šatník. Posuvné dvere, detská izba a kredenc so zabudovanou práčkou, sušičkou a chladničkou. Všetko z dubovej dyhy.',
+    imgs: range('Hantverk-Blumentalska', [1, 2, 3, 4, 5, 6, 7]) },
+  { id: 'panelakovy-byt', name: 'Panelákový byt', tag: 'S architektom · TOITO', tags: 'architekt rekonstrukcia',
+    line: 'Rekonštrukcia panelákového bytu podľa návrhu TOITO Architekti.',
+    desc: 'Rekonštrukcia panelákového bytu podľa TOITO Architekti. Kuchynská linka začína vo vedľajšej miestnosti ako komora s práčkou, chladničkou a ďalšími spotrebičmi a končí ako obývačka s knižnicou. Obklady stien s dverami a svetlíkmi z béžového laminátu a skrine rôznych farieb a veľkostí. Architektom sa podarilo do panelákového bytu dostať všetky funkcie, dostatok úložného priestoru a zároveň vytvoriť atmosféru domova.',
+    imgs: range('Hantverk-Panelak', [5, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13]) },
+  { id: 'palarikova', name: 'Palárikova', tag: 'Rekonštrukcia · Malý priestor', tags: 'rekonstrukcia maly', featured: true,
+    line: 'Jednoizbový byt v historickom dome: kuchyňa a šatník v jednej miestnosti.',
+    desc: 'Rekonštrukcia jednoizbového bytu v historickom objekte. Dve skrine, ktoré z chodby a kuchyne prechádzajú do obývacej izby. Zrkadlová skriňa plní funkciu technickej miestnosti a šatníka pri vstupe. Biela kuchynská linka a šatník v obývacej izbe.',
+    imgs: range('Hantverk-Palarikova', [5, 4, 1, 3, 2, 6, 7]) },
+  { id: 'byt-svtk', name: 'Byt SVTK', tag: 'S architektom · gmb.', tags: 'architekt', wide: true,
+    line: 'Interiér bytu podľa návrhu ateliéru gmb.',
+    desc: 'Vstupná skriňa prechádzajúca do knižnice z dubovej dyhy, doplnená modulom zo zeleného laminátu. Stolík pod TV rovnako zo zeleného laminátu, zdvihnutý na nerezových nožičkách. Architekt: gmb.',
+    imgs: range('Hantverk-Byt-SVTK', [1, 4, 2, 3, 5, 6]) },
+  { id: 'dom-pri-zvonici', name: 'Dom pri Zvonici', tag: 'S architektom · gmb.', tags: 'architekt materialy',
+    line: 'Rodinný dom, nábytok podľa projektu architekta.',
+    desc: 'Obklad, dvere v obklade a kuchynská linka z dubovej dyhy. Zrkadlový obklad a samostatne stojaca skriňa so zrkadlovými hranami. Interiér získal ocenenie Interiér roku (CZ) v kategórii privátny interiér. Architekt: gmb.',
+    imgs: range('Hantverk-Dom-pri-Zvonici', [4, 1, 5, 2, 3, 6]) },
+  { id: 'bnu', name: 'BNU', tag: 'Materiály · gmb.', tags: 'architekt materialy',
+    line: 'Dyha, nerezová pracovná doska a zrkadlové obklady.',
+    desc: 'Centrálny skriňový modul z ružového laminátu ako dominanta interiéru. Kuchynská linka zo šedého laminátu s nerezovou pracovnou doskou. Knižnica z policového systému v bielej farbe. Architekt: gmb.',
+    imgs: range('Hantverk_BNU', [7, 1, 2, 4, 5, 8, 9, 10]) },
+  { id: 'hostel', name: 'Hostel', tag: 'Prevádzka', tags: 'prevadzky materialy', wide: true,
+    line: 'Lobby z morenej preglejky, odolné riešenie pre prevádzku.',
+    desc: 'Zariadenie hostelového lobby lounge. Linka a pódiové sedenie z morenej preglejky s lakovanými hranami. Centrálny stôl z lakovanej preglejky. Dvere v obklade a obklad z bieleného smrekového dreva.',
+    imgs: range('Hantverk-Hostel', [2, 1, 3, 4, 5, 6, 7, 9, 10]) },
+  { id: 'sliacska', name: 'Sliačska', tag: 'Rodinný dom · Rekonštrukcia', tags: 'rekonstrukcia',
+    line: 'Linka zo zosvetlenej dubovej dyhy a stôl s mikrocementovou stierkou.',
+    desc: 'Rodinný dom po kompletnej rekonštrukcii. Kuchynská linka zo zosvetlenej dubovej dyhy. Nami navrhnutý kuchynský stôl z MDF potiahnutý mikrocementovou stierkou. Šatníkové skrine z lakovanej MDF.',
+    imgs: [IMG + 'Hantverk-Projekt2-Hero.jpg', ...range('Hantverk-Franekova', [1, 2, 4, 5, 6]), IMG + 'Hantverk-hero.jpg'] },
+  { id: 'belehradska', name: 'Belehradská', tag: 'Byt', tags: '',
+    line: 'Minimalistický byt pre rodinu: linka s doskou zasunutou do okna.',
+    desc: 'Funkčný minimalistický byt pre čoskoro trojčlennú rodinu. Kuchynská linka z dubovej dyhy rozdelená na pracovnú časť s doskou zasunutou do okna a vysokú zostavu s maximom úložného priestoru. Šatníkové skrine, knižnica a vykonzolovaný stolík pod TV z béžovej MDF.',
+    imgs: range('Hantverk-Belehradska', [5, 1, 2, 3, 6, 7, 8]) },
+  { id: 'rd-puchov', name: 'RD Púchov', tag: 'Rodinný dom', tags: '',
+    line: 'Novostavba: dubová dyha a systémové police s dobrým pomerom cena-výkon.',
+    desc: 'Interiér novostavby rodinného domu. Nábytok z dubovej dyhy doplnený systémovými policami v bielej farbe. Jednoduché opakujúce sa riešenie s veľmi dobrým pomerom cena-výkon.',
+    imgs: range('Hantverk-RD-Puchov', [2, 1, 3, 4, 5, 6, 7]) },
+  { id: 'prebalovna', name: 'Prebaľovňa', tag: 'Prevádzka', tags: 'prevadzky',
+    line: 'Prebaľovacie miestnosti v nákupnom centre: odolný laminát a farebná MDF.',
+    desc: 'Obnova prebaľovacích miestností v nákupnom centre. Posuvné a otváravé dvere, skrinky a lamelové obklady z laminátu s dubovým vzorom. Skrinky nad umývadlom a farebné prvky z lakovanej MDF. Hracie prvky PETINKA.',
+    imgs: range('Hantverk-Prebalovna', [5, 1, 2, 3, 4, 6, 7, 8, 9, 10]) },
+  { id: 'infopult', name: 'Infopult', tag: 'Prevádzka · Materiály', tags: 'prevadzky materialy',
+    line: 'Organický tvar z materiálu, ktorý je zo 100 % plastového recyklátu.',
+    desc: 'Infopult nákupného centra vyrobený z plošného materiálu, ktorý je zo 100 % tvorený z plastového recyklátu. Organický tvar, dve hmoty, dve funkcie, dva materiály.',
+    imgs: range('Hantverk-Infopult', [1, 2, 3, 4, 5, 6, 7]) },
+];
+
+/* referencie – karusel */
+const track = document.getElementById('refs-track');
+const pad = n => String(n).padStart(2, '0');
+P.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.className = 'ref'; b.dataset.open = p.id;
+  b.innerHTML = `<span class="ph"><img src="${p.imgs[0]}" alt="${p.name}" loading="lazy"><span class="go">Pozrieť projekt <span aria-hidden="true">→</span></span></span>
+    <h3>${p.name}</h3><p>${p.line}</p>`;
+  track.appendChild(b);
+});
+// spoločné ovládanie karuselu: počítadlo a šípky vpravo hore (referencie aj recenzie)
+function carousel(name) {
+  const tr = document.getElementById(name + '-track'), count = document.getElementById(name + '-count');
+  const prev = document.getElementById(name + '-prev'), next = document.getElementById(name + '-next');
+  const items = [...tr.children];
+  const step = () => items[1].offsetLeft - items[0].offsetLeft;
+  const update = () => {
+    const i = Math.round(tr.scrollLeft / step());
+    if (count) count.textContent = `${pad(Math.min(i + 1, items.length))} / ${pad(items.length)}`;
+    prev.disabled = tr.scrollLeft < 4;
+    next.disabled = tr.scrollLeft + tr.clientWidth >= tr.scrollWidth - 4;
+  };
+  prev.onclick = () => tr.scrollBy({ left: -step() });
+  next.onclick = () => tr.scrollBy({ left: step() });
+  tr.addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
+}
+carousel('refs');
+carousel('revs');
+
+/* modal */
+const modal = document.getElementById('modal'); let cur = 0, lastFocus = null;
+function openP(id) {
+  cur = P.findIndex(p => p.id === id); const p = P[cur]; if (!p) return;
+  document.getElementById('m-tag').textContent = p.tag;
+  document.getElementById('m-title').textContent = p.name;
+  document.getElementById('m-desc').textContent = p.desc;
+  document.getElementById('m-gal').innerHTML = p.imgs.map((s, i) => `<div class="ph"><img src="${s}" alt="${p.name} – foto ${i + 1}" loading="${i < 2 ? 'eager' : 'lazy'}" data-i="${i}"></div>`).join('');
+  if (!modal.classList.contains('open')) { lastFocus = document.activeElement; modal.hidden = false; requestAnimationFrame(() => modal.classList.add('open')); document.body.classList.add('lock'); }
+  modal.scrollTop = 0; document.getElementById('m-close').focus({ preventScroll: true });
+  history.replaceState(null, '', '#projekt-' + p.id);
+}
+function closeP() { modal.classList.remove('open'); document.body.classList.remove('lock'); setTimeout(() => modal.hidden = true, 250); history.replaceState(null, '', location.pathname); lastFocus && lastFocus.focus({ preventScroll: true }); }
+document.addEventListener('click', e => { const t = e.target.closest('[data-open]'); if (t) { e.preventDefault(); openP(t.dataset.open); } });
+document.getElementById('m-close').onclick = closeP;
+document.getElementById('m-cta').onclick = () => closeP();
+document.getElementById('m-prev').onclick = () => openP(P[(cur - 1 + P.length) % P.length].id);
+document.getElementById('m-next').onclick = () => openP(P[(cur + 1) % P.length].id);
+
+/* lightbox */
+const lb = document.getElementById('lb'), lbImg = document.getElementById('lb-img'); let lbSet = [], lbI = 0, lbName = '';
+function showLb() { lbImg.src = lbSet[lbI]; document.getElementById('lb-c').textContent = `${lbName} · ${lbI + 1} / ${lbSet.length}`; }
+function openLb(set, i, name) { lbSet = set; lbI = i; lbName = name; showLb(); lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); }
+function closeLb() { lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); }
+document.getElementById('m-gal').addEventListener('click', e => { const i = e.target.dataset.i; if (i != null) openLb(P[cur].imgs, +i, P[cur].name); });
+document.getElementById('lb-x').onclick = closeLb;
+document.getElementById('lb-p').onclick = () => { lbI = (lbI - 1 + lbSet.length) % lbSet.length; showLb(); };
+document.getElementById('lb-n').onclick = () => { lbI = (lbI + 1) % lbSet.length; showLb(); };
+lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+document.addEventListener('keydown', e => {
+  if (lb.classList.contains('open')) { if (e.key === 'Escape') closeLb(); if (e.key === 'ArrowLeft') document.getElementById('lb-p').click(); if (e.key === 'ArrowRight') document.getElementById('lb-n').click(); return; }
+  if (modal.classList.contains('open') && e.key === 'Escape') closeP();
+});
+
+/* header, mobilné menu, lišta */
+const hdr = document.querySelector('.hdr'), mbar = document.getElementById('mbar');
+const onScroll = () => { const y = scrollY; hdr.classList.toggle('scrolled', y > 8); mbar.classList.toggle('show', y > innerHeight * .8 && !document.getElementById('kontakt').contains(document.elementFromPoint(innerWidth / 2, innerHeight - 90))); };
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+const burger = document.querySelector('.burger');
+burger.onclick = () => { const o = document.body.classList.toggle('menu-open'); burger.setAttribute('aria-expanded', o); };
+document.querySelectorAll('.mnav a').forEach(a => a.addEventListener('click', () => { document.body.classList.remove('menu-open'); burger.setAttribute('aria-expanded', false); }));
+
+/* aktívna položka navigácie */
+const links = [...document.querySelectorAll('.nav a')];
+const navOf = { vyroba: 'tim' }; // Výroba patrí pod položku O nás
+const so = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const id = navOf[e.target.id] || e.target.id; links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + id)); } }), { rootMargin: '-45% 0px -50% 0px' });
+links.forEach(a => { const s = document.querySelector(a.getAttribute('href')); s && so.observe(s); });
+Object.keys(navOf).forEach(id => { const s = document.getElementById(id); s && so.observe(s); });
+
+/* reveal */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+/* formulár */
+const fileIn = document.getElementById('f-file');
+fileIn.onchange = () => document.getElementById('f-file-name').textContent = fileIn.files.length ? [...fileIn.files].map(f => f.name).join(', ') : 'Zatiaľ nič nevybrané';
+document.getElementById('form').addEventListener('submit', e => { e.preventDefault(); e.currentTarget.classList.add('sent'); });
+
+/* prepínač údajov na overenie */
+document.getElementById('proto-b').onclick = function () {
+  const h = document.body.classList.toggle('hide-tbd');
+  this.textContent = h ? 'Zobraziť' : 'Skryť';
+  document.getElementById('proto-t').textContent = h ? 'údaje na overenie skryté' : 'údaje na overenie zvýraznené';
+};
+
+/* deep link na projekt */
+if (location.hash.startsWith('#projekt-')) openP(location.hash.slice(9));
+</script>
+</body>
+</html>

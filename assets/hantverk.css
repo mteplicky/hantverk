@@ -1,0 +1,207 @@
+/* HANTVERK – dizajnový systém (tokeny + komponenty)
+   Zdroj estetiky: hantverk.sk (10/2026). Zdieľa ho prototyp aj manuál. */
+
+@font-face {
+  font-family: "Abordage";
+  src: url("brand/Abordage-Regular.otf") format("opentype");
+  font-display: swap;
+}
+
+:root {
+  /* farby */
+  --paper: #EEF0F0;        /* základné pozadie – sivý papier z hantverk.sk */
+  --paper-2: #E3E6E6;      /* plochy kariet, polí */
+  --white: #FFFFFF;
+  --ink: #111111;          /* text, tmavé sekcie */
+  --ink-2: #4D5252;        /* sekundárny text */
+  --mute: #666B6B;         /* popisky, metadata (AA na papieri 4,7:1) */
+  --line: rgba(17, 17, 17, .14);
+  --line-strong: rgba(17, 17, 17, .5);
+  --orange: #FF6600;       /* brand oranžová – logo, display písmo, CTA plocha */
+  --orange-deep: #AD4500;  /* oranžová pre malý text na papieri (AA 5,1:1) */
+  --orange-wash: rgba(255, 102, 0, .5); /* hover prekrytie fotografií */
+  --orange-soft: #D9753A;  /* svetlejšia oranžová pre štítky (label--orange) */
+  --tbd: #FFE3CF;          /* zvýraznenie údajov na overenie */
+
+  /* písmo */
+  --f-display: "Abordage", "Inter", system-ui, sans-serif;
+  --f-text: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-label: "Jost", "Inter", system-ui, sans-serif;
+
+  --t-hero: clamp(3rem, 6.6vw, 6.1rem);
+  --t-h2: clamp(2.3rem, 4.3vw, 3.9rem);
+  --t-h3: clamp(1.45rem, 2vw, 1.75rem);
+  --t-lead: clamp(1.1rem, 1.35vw, 1.3rem);
+  --t-body: 1.0625rem;
+  --t-small: .875rem;
+  --t-label: .75rem;
+
+  /* priestor – 8px mriežka */
+  --s1: 4px; --s2: 8px; --s3: 16px; --s4: 24px; --s5: 32px;
+  --s6: 48px; --s7: 64px; --s8: 96px; --s9: 144px;
+
+  --gutter: clamp(20px, 5.5vw, 88px);
+  --section-y: clamp(96px, 12vw, 192px);
+  --max: 1360px;
+  --header-h: 68px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 var(--t-body)/1.7 var(--f-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+::selection { background: var(--orange); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+
+/* ---------- typografia ---------- */
+.display, h1, h2, .h2 {
+  font-family: var(--f-display);
+  font-weight: 400;
+  letter-spacing: -.01em;
+  margin: 0;
+  text-wrap: balance;
+}
+h1, .t-hero { font-size: var(--t-hero); line-height: .98; color: var(--orange); }
+h2, .h2 { font-size: var(--t-h2); line-height: 1.02; color: var(--orange); }
+h3, .h3 { font-family: var(--f-display); font-weight: 400; font-size: var(--t-h3); line-height: 1.15; margin: 0; }
+.lead { font-size: var(--t-lead); line-height: 1.6; color: var(--ink-2); max-width: 36em; }
+.small { font-size: var(--t-small); line-height: 1.5; }
+.muted { color: var(--mute); }
+.label {
+  font: 400 .8rem/1.3 var(--f-label);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.label--orange { color: var(--orange-soft); }
+.num { font-variant-numeric: tabular-nums; }
+p { margin: 0 0 1em; }
+p:last-child { margin-bottom: 0; }
+
+/* údaj na overenie s klientom (hranaté zátvorky v UX štruktúre) */
+.tbd { background: var(--tbd); box-shadow: 0 0 0 2px var(--tbd); border-bottom: 1px dashed var(--orange-deep); }
+body.hide-tbd .tbd { background: none; box-shadow: none; border: 0; }
+
+/* ---------- layout ---------- */
+.wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+.section { padding: var(--section-y) 0; }
+.section--tight { padding: var(--s8) 0; }
+.section-head { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--s5) var(--s4); margin-bottom: clamp(56px, 7vw, 112px); align-items: end; }
+.section-head > .label { grid-column: 1 / -1; margin-bottom: 0; }
+.section-head > h2 { grid-column: 1 / 8; }
+.section-head > .lead, .section-head > .aside { grid-column: 9 / -1; }
+@media (max-width: 900px) {
+  .section-head > h2, .section-head > .lead, .section-head > .aside { grid-column: 1 / -1; }
+  .section-head { row-gap: var(--s4); }
+}
+
+/* ---------- tlačidlá ---------- */
+.btn {
+  --bg: var(--orange); --fg: var(--ink); --bd: var(--orange);
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 52px; padding: 0 24px;
+  background: var(--bg); color: var(--fg); border: 1px solid var(--bd);
+  font: 600 .95rem/1 var(--f-text); letter-spacing: .01em;
+  text-decoration: none; cursor: pointer; border-radius: 0;
+  transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+}
+.btn:hover { --bg: var(--ink); --fg: var(--paper); --bd: var(--ink); }
+.btn--ghost { --bg: transparent; --fg: var(--ink); --bd: var(--line-strong); }
+.btn--ghost:hover { --bg: var(--ink); --fg: var(--paper); --bd: var(--ink); }
+.btn--on-dark.btn--ghost { --fg: var(--paper); --bd: rgba(238,240,240,.4); }
+.btn--on-dark:hover { --bg: var(--paper); --fg: var(--ink); --bd: var(--paper); }
+.btn--sm { min-height: 40px; padding: 0 16px; font-size: .875rem; }
+.btn .arr { transition: transform .2s var(--ease); }
+.btn:hover .arr { transform: translateX(3px); }
+
+.link {
+  color: var(--orange-deep); text-decoration: none; font-weight: 600;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size .25s var(--ease);
+}
+.link:hover { background-size: 100% 1px; }
+
+/* ---------- filtre / chipy ---------- */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  min-height: 40px; padding: 0 16px; border: 1px solid var(--line-strong); background: transparent;
+  font: 500 .875rem/1 var(--f-text); cursor: pointer; border-radius: 999px;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.chip:hover { border-color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* ---------- fotografia ---------- */
+.ph { position: relative; overflow: hidden; background: var(--paper-2); }
+.ph img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
+.ph--hover::after {
+  content: ""; position: absolute; inset: 0; background: var(--orange-wash);
+  mix-blend-mode: multiply; opacity: 0; transition: opacity .3s var(--ease);
+}
+a:hover .ph--hover::after, button:hover .ph--hover::after { opacity: 1; }
+a:hover .ph--hover img, button:hover .ph--hover img { transform: scale(1.03); }
+
+/* kótovacia čiara – motív inžiniersky výkres */
+.dim { display: flex; align-items: center; gap: 10px; color: var(--orange-deep); font: 500 .75rem/1 var(--f-text); letter-spacing: .06em; }
+.dim::before, .dim::after { content: ""; flex: 1; height: 1px; background: currentColor; }
+.dim--v { flex-direction: column; writing-mode: vertical-rl; }
+.dim--v::before, .dim--v::after { width: 1px; height: auto; flex: 1; }
+.dim-ticks { position: relative; }
+.dim-ticks::before, .dim-ticks::after { content: ""; position: absolute; background: currentColor; }
+
+/* ---------- karta ---------- */
+.card { background: var(--white); padding: var(--s5); border: 1px solid var(--line); }
+.card--paper { background: transparent; }
+
+/* ---------- formulár ---------- */
+.field { display: grid; gap: 8px; }
+.field label { font: 600 .8125rem/1.2 var(--f-text); }
+.field .hint { font-weight: 400; color: var(--mute); }
+.input, .select, .textarea {
+  width: 100%; min-height: 52px; padding: 14px 16px;
+  background: var(--white); border: 1px solid var(--line-strong); border-radius: 0;
+  font-size: 1rem; transition: border-color .2s, box-shadow .2s;
+}
+.textarea { min-height: 120px; resize: vertical; }
+.input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(255,102,0,.35); }
+.select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%); background-position: calc(100% - 22px) 50%, calc(100% - 16px) 50%; background-size: 6px 6px; background-repeat: no-repeat; padding-right: 44px; }
+.file {
+  display: flex; align-items: center; gap: 16px; padding: 16px; border: 1px dashed var(--line-strong); background: var(--white); cursor: pointer;
+}
+.file:hover { border-color: var(--orange); }
+
+/* ---------- akordeón ---------- */
+.acc summary {
+  list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 24px; align-items: center;
+  padding: 30px 0; font-family: var(--f-display); font-size: clamp(1.15rem, 1.6vw, 1.4rem); line-height: 1.25;
+}
+.acc summary::-webkit-details-marker { display: none; }
+.acc summary .pm { flex: none; width: 28px; height: 28px; position: relative; }
+.acc summary .pm::before, .acc summary .pm::after { content: ""; position: absolute; left: 50%; top: 50%; width: 16px; height: 1.5px; background: var(--orange); transform: translate(-50%, -50%); transition: transform .25s var(--ease); }
+.acc summary .pm::after { transform: translate(-50%, -50%) rotate(90deg); }
+.acc details[open] .pm::after { transform: translate(-50%, -50%) rotate(0deg); }
+.acc .acc-body { padding: 0 0 32px; max-width: 46em; color: var(--ink-2); }
+.acc summary:hover { color: var(--orange-deep); }
+
+/* ---------- tmavá sekcia ---------- */
+.dark { background: var(--ink); color: var(--paper); }
+.dark .label { color: rgba(238,240,240,.6); }
+.dark .lead, .dark .muted { color: rgba(238,240,240,.7); }
+.dark .link { color: var(--orange); }
+
+/* ---------- reveal ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .rv { opacity: 0; transform: translateY(16px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+  .rv.in { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
