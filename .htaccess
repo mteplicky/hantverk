@@ -1,5 +1,6 @@
 Options -Indexes
 RewriteEngine On
+RewriteRule (^|/)\.deploy- - [F,L,NC]
 RewriteRule ^(?:\.git|vendor|deployment|tests)(?:/|$) - [F,L,NC]
 <FilesMatch "^(?:composer\.(?:json|lock)|hantverk-mail\.php|\.env.*)$">
   Require all denied

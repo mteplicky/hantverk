@@ -23,7 +23,8 @@ Requires PHP 8.2+ with OpenSSL and Fileinfo, and Websupport web hosting
    does not guarantee inbox delivery; inspect spam if necessary.
 
 SMTP is smtp.m1.websupport.sk, SSL port 465. The authenticated mailbox is the
-sender; info@hantverk.sk is the fixed recipient. Visitors are Reply-To only.
+sender; info@hantverk.sk and mteplicky@gmail.com are the fixed recipients.
+Visitors are Reply-To only.
 Reference: https://www.websupport.sk/podpora/kb/postove-protokoly/
 
 The hidden honeypot and server-side limits reduce basic spam. Limits count attempts

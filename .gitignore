@@ -5,3 +5,6 @@ vendor/
 hantverk-mail.php
 .env
 .env.*
+deployment/*.zip
+deployment/node_modules/
+deployment/package-lock.json

@@ -1,0 +1,56 @@
+name: Deploy to Websupport
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: websupport-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: fileinfo, openssl
+          tools: composer:v2
+          coverage: none
+
+      - name: Check code and install mail dependencies
+        run: |
+          node --test tests/*.test.cjs
+          php -l contact.php
+          composer validate --no-check-publish
+          composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-progress
+          composer audit --no-dev
+
+      - name: Install FTP client
+        run: npm install --prefix deployment --no-save --ignore-scripts --package-lock=false basic-ftp@6.2.5
+
+      - name: Upload website over encrypted FTP
+        env:
+          WEBSUPPORT_FTP_HOST: ${{ secrets.WEBSUPPORT_FTP_HOST }}
+          WEBSUPPORT_FTP_PASSWORD: ${{ secrets.WEBSUPPORT_FTP_PASSWORD }}
+        run: node deployment/deploy.cjs
+
+      - name: Check the public website
+        run: |
+          curl --fail --silent --show-error --retry 3 --retry-delay 5 --retry-all-errors --max-time 30 https://hantverk.sk/ -o /tmp/hantverk-live.html
+          grep -q 'assets/contact.js' /tmp/hantverk-live.html

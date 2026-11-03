@@ -138,6 +138,7 @@ try {
     $mail->CharSet = 'UTF-8';
     $mail->setFrom($config['username'], 'Hantverk – web');
     $mail->addAddress('info@hantverk.sk');
+    $mail->addAddress('mteplicky@gmail.com');
     $mail->addReplyTo($email, $name);
     $mail->Subject = 'Nový dopyt z hantverk.sk';
     $mail->Body = "Meno: $name\nE-mail: $email\nTelefón: $phone\nSituácia: $situation\n\n$message";
