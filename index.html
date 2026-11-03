@@ -410,12 +410,13 @@ body.lock { overflow: hidden; }
   <div class="wrap contact">
     <h2 class="contact-title">Ozvite sa nám, o&nbsp;zvyšok sa postaráme my&nbsp;:)</h2>
     <div class="contact-form">
-      <form class="form" id="form" novalidate>
-        <div class="field"><label for="f-name">Meno</label><input class="input" id="f-name" placeholder="Jana Nováková" autocomplete="name" required></div>
-        <div class="field"><label for="f-tel">Telefón</label><input class="input" id="f-tel" type="tel" placeholder="+421 9xx xxx xxx" autocomplete="tel"></div>
-        <div class="field full"><label for="f-mail">E-mail</label><input class="input" id="f-mail" type="email" placeholder="jana@email.sk" autocomplete="email" required></div>
+      <form class="form" id="form" action="contact.php" method="post" enctype="multipart/form-data">
+        <div hidden aria-hidden="true"><label for="f-website">Website</label><input id="f-website" name="website" tabindex="-1" autocomplete="off"></div>
+        <div class="field"><label for="f-name">Meno</label><input class="input" id="f-name" name="name" maxlength="200" placeholder="Jana Nováková" autocomplete="name" required></div>
+        <div class="field"><label for="f-tel">Telefón</label><input class="input" id="f-tel" name="phone" maxlength="80" type="tel" placeholder="+421 9xx xxx xxx" autocomplete="tel"></div>
+        <div class="field full"><label for="f-mail">E-mail</label><input class="input" id="f-mail" name="email" maxlength="254" type="email" placeholder="jana@email.sk" autocomplete="email" required></div>
         <div class="field full"><label for="f-sit">Vaša situácia</label>
-          <select class="select" id="f-sit">
+          <select class="select" id="f-sit" name="situation">
             <option>Rekonštrukcia bytu alebo domu</option>
             <option>Malý byt, potrebujem viac priestoru</option>
             <option>Mám projekt od architekta</option>
@@ -424,16 +425,18 @@ body.lock { overflow: hidden; }
             <option>Iné</option>
           </select>
         </div>
-        <div class="field full"><label for="f-msg">Čo chcete riešiť</label><textarea class="textarea" id="f-msg" placeholder="Napr. kuchyňa a šatník v 2-izbovom byte, rekonštrukcia od marca"></textarea></div>
+        <div class="field full"><label for="f-msg">Čo chcete riešiť</label><textarea class="textarea" id="f-msg" name="message" maxlength="10000" placeholder="Napr. kuchyňa a šatník v 2-izbovom byte, rekonštrukcia od marca"></textarea></div>
         <div class="field full"><label>Pôdorys alebo fotky <span class="hint">PDF, JPG – nepovinné</span></label>
           <label class="file" for="f-file"><span class="btn btn--ghost btn--sm" aria-hidden="true">Vybrať súbor</span><span class="small muted" id="f-file-name">Zatiaľ nič nevybrané</span></label>
-          <input id="f-file" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple hidden>
+          <input id="f-file" name="attachments[]" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple hidden>
+          <p class="hint">Najviac 5 súborov, spolu do 10 MB.</p>
         </div>
         <div class="form-foot">
           <p>Odoslaním súhlasíte so spracovaním údajov na účel cenovej ponuky. <a class="link" href="#" onclick="return false">Ochrana osobných údajov</a></p>
           <button class="btn" type="submit">Odoslať pôdorys <span class="arr">→</span></button>
         </div>
-        <div class="form-ok" role="status"><h3 class="h3" style="color:var(--orange);margin-bottom:8px">Ďakujeme, pôdorys máme.</h3><p class="muted">Ozveme sa do <span class="tbd">5</span> pracovných dní s prvým návrhom riešenia. (Prototyp – formulár nič neodosiela.)</p></div>
+        <p id="form-error" class="full" role="alert" hidden></p>
+        <div class="form-ok" role="status"><h3 class="h3" style="color:var(--orange);margin-bottom:8px">Ďakujeme, vašu správu sme prijali.</h3><p class="muted">Ozveme sa do <span class="tbd">5</span> pracovných dní s prvým návrhom riešenia.</p></div>
       </form>
     </div>
     <aside class="contact-side">
@@ -648,11 +651,6 @@ Object.keys(navOf).forEach(id => { const s = document.getElementById(id); s && s
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
 document.querySelectorAll('.rv').forEach(el => io.observe(el));
 
-/* formulár */
-const fileIn = document.getElementById('f-file');
-fileIn.onchange = () => document.getElementById('f-file-name').textContent = fileIn.files.length ? [...fileIn.files].map(f => f.name).join(', ') : 'Zatiaľ nič nevybrané';
-document.getElementById('form').addEventListener('submit', e => { e.preventDefault(); e.currentTarget.classList.add('sent'); });
-
 /* prepínač údajov na overenie */
 document.getElementById('proto-b').onclick = function () {
   const h = document.body.classList.toggle('hide-tbd');
@@ -663,5 +661,6 @@ document.getElementById('proto-b').onclick = function () {
 /* deep link na projekt */
 if (location.hash.startsWith('#projekt-')) openP(location.hash.slice(9));
 </script>
+<script src="assets/contact.js" defer></script>
 </body>
 </html>

@@ -1,3 +1,7 @@
 # interné podklady, nie sú súčasťou webu
 poznamky-k-strukture.md
 brand-a-dizajn-manual.html
+vendor/
+hantverk-mail.php
+.env
+.env.*

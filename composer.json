@@ -1,0 +1,8 @@
+{
+  "require": {
+    "php": ">=8.2",
+    "ext-fileinfo": "*",
+    "ext-openssl": "*",
+    "phpmailer/phpmailer": "^6.10 || ^7.0"
+  }
+}
