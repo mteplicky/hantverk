@@ -51,7 +51,7 @@
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  background: #39FF14; /* Temporary deployment test; restore var(--paper). */
+  background: var(--paper);
   color: var(--ink);
   font: 400 var(--t-body)/1.7 var(--f-text);
   -webkit-font-smoothing: antialiased;
