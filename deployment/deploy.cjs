@@ -33,9 +33,21 @@ async function deploy(client, root, credentials) {
   }
   const files = deploymentFiles(root);
   const run = randomUUID();
-  let stage = 'connecting and authenticating over FTPS';
+  let stage = 'opening the FTP connection';
   try {
-    await client.access({ ...credentials, port: 21, secure: true });
+    if (client.ftp) client.ftp.log = message => {
+      const trace = protocolTrace(message);
+      if (trace) console.log(trace);
+    };
+    await client.connect(credentials.host, 21);
+    stage = 'negotiating TLS';
+    await client.useTLS({ host: credentials.host, servername: credentials.host });
+    stage = 'authenticating the deployment account';
+    await client.login(credentials.user, credentials.password);
+    stage = 'configuring encrypted file transfers';
+    // Configure UTF-8 and transfer settings after login. Some servers reject
+    // optional commands sent before authentication by the access() shortcut.
+    await client.useDefaultSettings();
     // Fail rather than create a directory if the account's root is misconfigured.
     stage = 'opening /new-site';
     await client.cd(REMOTE_DIR);
@@ -67,6 +79,19 @@ async function deploy(client, root, credentials) {
   }
 }
 
+function protocolTrace(message) {
+  // Log command verbs and reply codes only, never command arguments or replies.
+  const command = /^> ([A-Z]+)/.exec(message);
+  if (command) return `FTP command: ${command[1]}`;
+  if (message.startsWith('< ')) {
+    const codes = [...message.matchAll(/(?:^< |\n)(\d{3})[ -]/g)].map(match => match[1]);
+    if (codes.length) return `FTP reply: ${codes.join(', ')}`;
+  }
+  if (message.startsWith('Connected to ')) return 'FTP connection established';
+  if (message.startsWith('Control socket is using: ')) return 'FTP TLS established';
+  return '';
+}
+
 function safeError(error, credentials) {
   let message = `Deployment failed while ${error.deployStage || 'preparing files'} (${error.code || error.name}): ${error.message || 'Unknown error'}`;
   for (const value of Object.values(credentials).filter(value => typeof value === 'string' && value.length).sort((a, b) => b.length - a.length)) {
@@ -89,4 +114,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { deploymentFiles, deploy, safeError };
+module.exports = { deploymentFiles, deploy, safeError, protocolTrace };

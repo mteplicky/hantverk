@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { deploymentFiles, deploy, safeError } = require('../deployment/deploy.cjs');
+const { deploymentFiles, deploy, safeError, protocolTrace } = require('../deployment/deploy.cjs');
 
 function fixture(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'hantverk-deploy-'));
@@ -29,7 +29,7 @@ test('missing mail dependency prevents deployment', t => {
 function fakeClient(fail = false) {
   const calls = [];
   const client = { calls, close() { calls.push(['close']); } };
-  for (const name of ['access', 'cd', 'size', 'ensureDir', 'uploadFrom', 'rename']) {
+  for (const name of ['connect', 'useTLS', 'login', 'useDefaultSettings', 'cd', 'size', 'ensureDir', 'uploadFrom', 'rename']) {
     client[name] = async (...args) => {
       calls.push([name, ...args]);
       if (fail && name === 'uploadFrom') throw new Error('Transfer failed');
@@ -41,8 +41,13 @@ function fakeClient(fail = false) {
 test('uses FTPS and publishes complete files with index last', async t => {
   const client = fakeClient();
   await deploy(client, fixture(t), { host: 'ftp.example.com', user: 'deploy', password: 'test' });
-  assert.equal(client.calls[0][1].secure, true);
-  assert.deepEqual(client.calls[1], ['cd', '/new-site']);
+  assert.deepEqual(client.calls.slice(0, 5), [
+    ['connect', 'ftp.example.com', 21],
+    ['useTLS', { host: 'ftp.example.com', servername: 'ftp.example.com' }],
+    ['login', 'deploy', 'test'],
+    ['useDefaultSettings'],
+    ['cd', '/new-site'],
+  ]);
   const renames = client.calls.filter(call => call[0] === 'rename');
   assert.equal(renames.at(-1)[2], 'index.html');
   assert.equal(client.calls.some(call => call[0] === 'remove'), false);
@@ -58,12 +63,19 @@ test('failed upload never publishes the entry point and closes connection', asyn
 
 test('connection errors identify the failing stage', async t => {
   const client = fakeClient();
-  client.access = async () => { throw new Error('Login rejected'); };
+  client.login = async () => { throw new Error('Login rejected'); };
   await assert.rejects(deploy(client, fixture(t), { host: 'ftp.example.com', user: 'deploy', password: 'secret' }), error => {
-    assert.equal(error.deployStage, 'connecting and authenticating over FTPS');
+    assert.equal(error.deployStage, 'authenticating the deployment account');
     return true;
   });
   assert.equal(client.calls.at(-1)[0], 'close');
+});
+
+test('protocol trace logs only command verbs and reply codes', () => {
+  assert.equal(protocolTrace('> PASS extremely-private-password'), 'FTP command: PASS');
+  assert.equal(protocolTrace('> USER private-user'), 'FTP command: USER');
+  assert.equal(protocolTrace('< 530 Login rejected for private-user\r\n'), 'FTP reply: 530');
+  assert.equal(protocolTrace('arbitrary sensitive text'), '');
 });
 
 test('error details redact credentials and raw PASS commands', () => {
