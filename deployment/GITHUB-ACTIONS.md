@@ -37,6 +37,15 @@ Use the composer.lock generated on the server in Git for reproducible dependenci
 until it is committed, Composer resolves allowed versions on each run and CI runs
 composer audit before uploading.
 
+After the first deployment with change detection, SHA-256 hashes in the private
+.deploy-manifest.json file let later deployments skip unchanged files, including
+images. The manifest is saved only after all uploads succeed. The first run with
+this version uploads everything once to establish that baseline. Upload logs show
+each changed filename and an uploaded/skipped count. To repair files changed or
+deleted manually on the server, remove new-site/.deploy-manifest.json via FTP and
+rerun the workflow to force a full upload. The manifest assumes deployments are
+the only source of changes in new-site.
+
 The private ../hantverk-mail.php file is outside the target and is never uploaded
 or deleted. Existing WordPress directories are outside the target too.
 

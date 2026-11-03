@@ -3,7 +3,8 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { deploymentFiles, deploy, safeError, protocolTrace } = require('../deployment/deploy.cjs');
+const { finished } = require('node:stream/promises');
+const { deploymentFiles, deploy, safeError, protocolTrace, fileHashes } = require('../deployment/deploy.cjs');
 
 function fixture(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'hantverk-deploy-'));
@@ -26,9 +27,15 @@ test('missing mail dependency prevents deployment', t => {
   assert.throws(() => deploymentFiles(root), /composer install/);
 });
 
-function fakeClient(fail = false) {
+function fakeClient(fail = false, manifest = null) {
   const calls = [];
   const client = { calls, close() { calls.push(['close']); } };
+  client.downloadTo = async (target, filename) => {
+    calls.push(['downloadTo', filename]);
+    if (manifest === null) throw Object.assign(new Error('Not found'), { code: 550 });
+    target.end(JSON.stringify(manifest));
+    await finished(target);
+  };
   for (const name of ['connect', 'useTLS', 'login', 'useDefaultSettings', 'cd', 'size', 'ensureDir', 'uploadFrom', 'rename']) {
     client[name] = async (...args) => {
       calls.push([name, ...args]);
@@ -49,9 +56,43 @@ test('uses FTPS and publishes complete files with index last', async t => {
     ['cd', '/new-site'],
   ]);
   const renames = client.calls.filter(call => call[0] === 'rename');
-  assert.equal(renames.at(-1)[2], 'index.html');
+  assert.equal(renames.at(-2)[2], 'index.html');
+  assert.equal(renames.at(-1)[2], '.deploy-manifest.json');
   assert.equal(client.calls.some(call => call[0] === 'remove'), false);
   assert.equal(client.calls.at(-1)[0], 'close');
+});
+
+test('unchanged website files are skipped', async t => {
+  const root = fixture(t);
+  const manifest = { version: 1, files: fileHashes(root, deploymentFiles(root)) };
+  const client = fakeClient(false, manifest);
+  await deploy(client, root, { host: 'ftp.example.com', user: 'deploy', password: 'test' });
+  const uploads = client.calls.filter(call => call[0] === 'uploadFrom');
+  assert.equal(uploads.length, 1); // Only the small manifest, no website files.
+  assert.equal(typeof uploads[0][1], 'object');
+});
+
+test('same-size content changes are uploaded while unchanged assets are skipped', async t => {
+  const root = fixture(t);
+  const manifest = { version: 1, files: fileHashes(root, deploymentFiles(root)) };
+  fs.writeFileSync(path.join(root, 'index.html'), 'edit');
+  const client = fakeClient(false, manifest);
+  await deploy(client, root, { host: 'ftp.example.com', user: 'deploy', password: 'test' });
+  const uploads = client.calls.filter(call => call[0] === 'uploadFrom' && typeof call[1] === 'string');
+  assert.deepEqual(uploads.map(call => path.relative(root, call[1])), ['index.html']);
+});
+
+test('a failed partial deployment never saves a new manifest', async t => {
+  const client = fakeClient(true);
+  await assert.rejects(deploy(client, fixture(t), { host: 'ftp.example.com', user: 'deploy', password: 'test' }));
+  assert.equal(client.calls.some(call => call[0] === 'rename' && call[2] === '.deploy-manifest.json'), false);
+});
+
+test('unexpected manifest download errors fail before uploads', async t => {
+  const client = fakeClient();
+  client.downloadTo = async () => { throw new Error('Connection lost'); };
+  await assert.rejects(deploy(client, fixture(t), { host: 'ftp.example.com', user: 'deploy', password: 'test' }));
+  assert.equal(client.calls.some(call => call[0] === 'uploadFrom'), false);
 });
 
 test('failed upload never publishes the entry point and closes connection', async t => {

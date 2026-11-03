@@ -1,9 +1,38 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { randomUUID } = require('node:crypto');
+const { randomUUID, createHash } = require('node:crypto');
+const { Readable, Writable } = require('node:stream');
 
 // Relative to the deploy.hantverk.sk account, which is restricted to /hantverk.sk.
 const REMOTE_DIR = '/new-site';
+const MANIFEST = '.deploy-manifest.json';
+
+function fileHashes(root, files) {
+  return Object.fromEntries(files.map(file => [file, createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex')]));
+}
+
+async function readManifest(client) {
+  const chunks = [];
+  let length = 0;
+  const target = new Writable({ write(chunk, encoding, callback) {
+    length += chunk.length;
+    if (length > 1024 * 1024) return callback(new Error('Deployment manifest exceeds size limit'));
+    chunks.push(Buffer.from(chunk));
+    callback();
+  } });
+  try {
+    await client.downloadTo(target, MANIFEST);
+  } catch (error) {
+    if (Number(error.code) === 550) return {};
+    throw error;
+  }
+  const manifest = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+  if (manifest?.version !== 1 || !manifest.files || typeof manifest.files !== 'object' || Array.isArray(manifest.files)
+      || Object.values(manifest.files).some(hash => typeof hash !== 'string' || !/^[a-f0-9]{64}$/.test(hash))) {
+    throw new Error('Invalid deployment manifest; remove .deploy-manifest.json to rebuild it');
+  }
+  return manifest.files;
+}
 
 function deploymentFiles(root) {
   const files = [];
@@ -32,6 +61,7 @@ async function deploy(client, root, credentials) {
     if (!credentials[key]) throw new Error(`Missing FTP ${key}`);
   }
   const files = deploymentFiles(root);
+  const hashes = fileHashes(root, files);
   const run = randomUUID();
   let stage = 'opening the FTP connection';
   try {
@@ -48,14 +78,21 @@ async function deploy(client, root, credentials) {
     // Configure UTF-8 and transfer settings after login. Some servers reject
     // optional commands sent before authentication by the access() shortcut.
     await client.useDefaultSettings();
+    if (client.ftp) client.ftp.log = () => {};
     // Fail rather than create a directory if the account's root is misconfigured.
     stage = 'opening /new-site';
     await client.cd(REMOTE_DIR);
     stage = 'checking existing website files';
     await client.size('index.html');
     await client.size('contact.php');
+    stage = 'reading the previous deployment manifest';
+    const previous = await readManifest(client);
+    const changed = files.filter(file => previous[file] !== hashes[file]);
+    console.log(`Uploading ${changed.length} changed files; skipping ${files.length - changed.length} unchanged files.`);
     const knownDirs = new Set(['.']);
-    for (const relative of files) {
+    let uploaded = 0;
+    for (const relative of changed) {
+      console.log(`[${++uploaded}/${changed.length}] ${relative}`);
       const dir = path.posix.dirname(relative);
       if (!knownDirs.has(dir)) {
         stage = `creating directory ${dir}`;
@@ -70,7 +107,12 @@ async function deploy(client, root, credentials) {
       stage = `publishing ${relative}`;
       await client.rename(temporary, relative);
     }
-    console.log(`Deployed ${files.length} files to new-site.`);
+    // Record hashes only after every changed website file was published.
+    stage = 'saving the successful deployment manifest';
+    const temporary = `.deploy-${run}.tmp`;
+    await client.uploadFrom(Readable.from([JSON.stringify({ version: 1, files: hashes })]), temporary);
+    await client.rename(temporary, MANIFEST);
+    console.log(`Deployed ${changed.length} files to new-site; skipped ${files.length - changed.length} unchanged files.`);
   } catch (error) {
     error.deployStage = stage;
     throw error;
@@ -114,4 +156,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { deploymentFiles, deploy, safeError, protocolTrace };
+module.exports = { deploymentFiles, deploy, safeError, protocolTrace, fileHashes };
