@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { deploymentFiles, deploy } = require('../deployment/deploy.cjs');
+const { deploymentFiles, deploy, safeError } = require('../deployment/deploy.cjs');
 
 function fixture(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'hantverk-deploy-'));
@@ -54,4 +54,25 @@ test('failed upload never publishes the entry point and closes connection', asyn
   await assert.rejects(deploy(client, fixture(t), { host: 'ftp.example.com', user: 'deploy', password: 'test' }));
   assert.equal(client.calls.some(call => call[0] === 'rename'), false);
   assert.equal(client.calls.at(-1)[0], 'close');
+});
+
+test('connection errors identify the failing stage', async t => {
+  const client = fakeClient();
+  client.access = async () => { throw new Error('Login rejected'); };
+  await assert.rejects(deploy(client, fixture(t), { host: 'ftp.example.com', user: 'deploy', password: 'secret' }), error => {
+    assert.equal(error.deployStage, 'connecting and authenticating over FTPS');
+    return true;
+  });
+  assert.equal(client.calls.at(-1)[0], 'close');
+});
+
+test('error details redact credentials and raw PASS commands', () => {
+  const error = new Error('ftp.example.com rejected deploy-user using private-password\nPASS unexpected-secret');
+  error.deployStage = 'connecting';
+  const message = safeError(error, { host: 'ftp.example.com', user: 'deploy-user', password: 'private-password' });
+  assert.match(message, /while connecting/);
+  for (const secret of ['ftp.example.com', 'deploy-user', 'private-password', 'unexpected-secret']) {
+    assert.equal(message.includes(secret), false);
+  }
+  assert.equal(message.includes('\n'), false);
 });
