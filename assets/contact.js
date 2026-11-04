@@ -32,6 +32,7 @@
         throw new Error(result.message || 'Správu sa nepodarilo odoslať. Skúste to znova.');
       }
       form.classList.add('sent');
+      document.querySelector('.contact-title').textContent = 'Ďakujeme :)';
       const success = form.querySelector('.form-ok');
       success.tabIndex = -1;
       success.focus();

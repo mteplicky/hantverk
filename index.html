@@ -215,9 +215,23 @@ blockquote { margin: 0; }
 .modal.open { opacity: 1; visibility: visible; }
 .modal-bar { position: sticky; top: 0; z-index: 2; background: rgba(238,240,240,.94); backdrop-filter: blur(8px); }
 .modal-bar .wrap { height: var(--header-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.modal-close { all: unset; cursor: pointer; display: inline-flex; gap: 10px; align-items: center; font-weight: 600; font-size: .95rem; }
+.modal-close { all: unset; cursor: pointer; display: inline-flex; gap: 10px; align-items: center; font-weight: 600; font-size: 1.15rem; color: var(--orange); }
 .modal-close:hover { color: var(--orange-deep); }
-.modal-nav { display: flex; gap: 8px; }
+.modal-close svg { width: 30px; height: 30px; flex: none; transition: transform .2s var(--ease); }
+.modal-close:hover svg { transform: translateX(-3px); }
+.modal-close:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
+@media (max-width: 640px) { .modal-close { font-size: .92rem; gap: 2px; } .modal-close svg { width: 24px; height: 24px; } }
+.modal-nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding-bottom: var(--s6); }
+.modal-nav button { all: unset; cursor: pointer; display: inline-flex; gap: 10px; align-items: center; font-weight: 600; font-size: 1.15rem; color: var(--orange); }
+.modal-nav svg { width: 30px; height: 30px; flex: none; transition: transform .2s var(--ease); }
+.modal-nav #m-prev:hover svg { transform: translateX(-3px); }
+.modal-nav #m-next:hover svg { transform: translateX(3px); }
+.modal-nav #m-prev { justify-self: start; }
+.modal-nav #m-home { justify-self: center; }
+.modal-nav #m-next { justify-self: end; }
+@media (max-width: 640px) { .modal-nav { grid-template-columns: 1fr 1fr; row-gap: 24px; } .modal-nav button { font-size: .92rem; gap: 2px; white-space: nowrap; } .modal-nav svg { width: 24px; height: 24px; } .modal-nav #m-home { grid-row: 2; grid-column: 1 / -1; } }
+.modal-nav button:hover { color: var(--orange-deep); }
+.modal-nav button:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
 .modal-head { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--s4); padding: var(--s7) 0 var(--s6); }
 .modal-head .t { grid-column: 1 / 7; }
 .modal-head .t h2 { margin-top: 16px; }
@@ -227,8 +241,7 @@ blockquote { margin: 0; }
 .modal-gal .ph:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
 .modal-gal .ph { aspect-ratio: 4 / 5; }
 .modal-gal .ph img { cursor: zoom-in; }
-.modal-cta { display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; justify-content: space-between; padding: 32px 0 var(--s8); }
-.modal-cta .h3 { color: var(--orange); }
+.modal-cta { display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; justify-content: flex-end; padding: 32px 0 var(--s8); }
 @media (max-width: 900px) { .modal-head .t, .modal-head .d { grid-column: 1 / -1; } .modal-gal { grid-template-columns: 1fr; } .modal-gal .ph, .modal-gal .ph:first-child { aspect-ratio: 4 / 3.4; } }
 body.lock { overflow: hidden; }
 
@@ -242,14 +255,9 @@ body.lock { overflow: hidden; }
 .lb .n { right: 12px; top: 50%; transform: translateY(-50%); font-size: 2rem; }
 .lb .c { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; color: rgba(238,240,240,.7); font-size: .85rem; }
 
-/* ---------- prepínač prototypu ---------- */
-.proto { position: fixed; left: 16px; bottom: 16px; z-index: 70; display: flex; gap: 10px; align-items: center; background: var(--ink); color: var(--paper); padding: 8px 8px 8px 14px; font-size: .78rem; box-shadow: 0 6px 24px rgba(0,0,0,.18); }
-.proto button { all: unset; cursor: pointer; background: var(--orange); color: var(--ink); padding: 6px 10px; font-weight: 600; }
-.proto a { color: var(--orange); }
-@media (max-width: 760px) { .proto { bottom: 84px; left: 8px; padding: 6px; font-size: .72rem; } .proto #proto-t, .proto .pl { display: none; } }
 </style>
 </head>
-<body>
+<body class="hide-tbd">
 
 <!-- ============ HEADER ============ -->
 <header class="hdr" id="top">
@@ -395,12 +403,10 @@ body.lock { overflow: hidden; }
       </div>
     </div>
     <div class="refs-track revs" id="revs-track">
-      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px">„Starý byt mal krivé steny a málo miesta. Marek prišiel s riešením, na ktoré by sme sami neprišli, a skrine sedia na milimeter aj pod šikmým stropom.“</blockquote></div><figcaption class="small muted"><span class="tbd">Meno klienta</span> · Staré Mesto · rekonštrukcia bytu</figcaption></figure>
-      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px">„Vedeli sme presnú cenu aj termín ešte pred podpisom a obe platili. Montáž trvala dva dni a chlapci po sebe všetko upratali.“</blockquote></div><figcaption class="small muted"><span class="tbd">Meno klienta</span> · Ružinov · kuchyňa a šatník</figcaption></figure>
-      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px">„Dielenské výkresy dostanem na schválenie skôr, než sa čokoľvek reže. Presne to od stolára pri náročnom detaile potrebujem.“</blockquote></div><figcaption class="small muted"><span class="tbd">Meno architekta</span> · <span class="tbd">ateliér</span> · interiér bytu</figcaption></figure>
-      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px"><span class="tbd">„Do malej predsiene sme nič hotové nevedeli nájsť. Teraz tam je skriňa, lavica aj botník a stále sa tam dá prejsť.“</span></blockquote></div><figcaption class="small muted"><span class="tbd">Meno klienta</span> · Petržalka · predsieň</figcaption></figure>
-      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px"><span class="tbd">„Oceňujem, že sa s nimi dá riešiť detail priamo pri výkrese. Skrytá zárubňa vyšla presne tak, ako sme ju nakreslili.“</span></blockquote></div><figcaption class="small muted"><span class="tbd">Meno architekta</span> · <span class="tbd">ateliér</span> · rodinný dom</figcaption></figure>
-      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px"><span class="tbd">„Kuchyňa nám slúži už tretí rok a všetko drží ako na začiatku. Keď bolo treba doladiť pánt, prišli do týždňa.“</span></blockquote></div><figcaption class="small muted"><span class="tbd">Meno klienta</span> · Nové Mesto · kuchyňa</figcaption></figure>
+      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px">„Hantverk môžem odporučiť, boli sme spokojní s realizáciou nábytku do celého bytu, od kuchynskej linky až po jednotlivé izby. S komunikáciou nebol problém, v prípade dodatočných požiadavok boli stolári ochotní prísť a upraviť nábytok na mieru.“</blockquote></div><figcaption class="small muted">Miroslav</figcaption></figure>
+      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px">„S touto firmou máme výbornú skúsenosť. Od prvého kontaktu až po finálnu realizáciu prebehlo všetko hladko a na vysokej úrovni. Veľmi oceňujeme príjemnú komunikáciu, spoľahlivosť, precízne spracovanie a cit pre detail.“</blockquote></div><figcaption class="small muted">Lucia</figcaption></figure>
+      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px">„Pokiaľ hľadáte spoľahlivého stolára na nábytok na mieru, tak môžem odporúčiť. Profesionálny prístup, dôraz na detaily, výborná komunikácia a dodržiavanie dohodnutých termínov.“</blockquote></div><figcaption class="small muted">Ivan</figcaption></figure>
+      <figure class="rev" style="margin:0"><div><div class="stars">★★★★★</div><blockquote class="quote" style="margin-top:16px">„Veľmi spokojný s robotou! Rýchlo a profesionálne môžem len odporučiť.“</blockquote></div><figcaption class="small muted">Laco</figcaption></figure>
     </div>
   </div>
 </section>
@@ -433,10 +439,10 @@ body.lock { overflow: hidden; }
         </div>
         <div class="form-foot">
           <p>Odoslaním súhlasíte so spracovaním údajov na účel cenovej ponuky. <a class="link" href="#" onclick="return false">Ochrana osobných údajov</a></p>
-          <button class="btn" type="submit">Odoslať pôdorys <span class="arr">→</span></button>
+          <button class="btn" type="submit">Odoslať <span class="arr">→</span></button>
         </div>
         <p id="form-error" class="full" role="alert" hidden></p>
-        <div class="form-ok" role="status"><h3 class="h3" style="color:var(--orange);margin-bottom:8px">Ďakujeme, vašu správu sme prijali.</h3><p class="muted">Ozveme sa do <span class="tbd">5</span> pracovných dní s prvým návrhom riešenia.</p></div>
+        <div class="form-ok" role="status"><h3 class="h3" style="color:var(--orange);margin-bottom:8px">Ďakujeme, vašu správu sme prijali.</h3><p class="muted">Ozveme sa do 5 pracovných dní s prvým návrhom riešenia.</p></div>
       </form>
     </div>
     <aside class="contact-side">
@@ -458,10 +464,10 @@ body.lock { overflow: hidden; }
     <div class="acc">
       <details open><summary>Koľko stojí kuchyňa na mieru v Bratislave?<span class="pm"></span></summary><div class="acc-body">Kuchyne na mieru robíme od 9 900 € s DPH, výrobou a montážou. Cenu najviac ovplyvní dĺžka linky, materiál dvierok, pracovná doska a kovanie. Presnú cenu dostanete po bezplatnom zameraní.</div></details>
       <details><summary>Ako dlho trvá výroba a montáž?<span class="pm"></span></summary><div class="acc-body">Výroba trvá 6–8 týždňov od schválenia dielenskej dokumentácie. Montáž 1–2 týždne.</div></details>
-      <details><summary>Je zameranie a návrh spoplatnený?<span class="pm"></span></summary><div class="acc-body">Nie. Zameranie a návrh dispozície sú súčasťou zákazky. Platíte až pri objednávke výroby, zálohu <span class="tbd">50</span> %.</div></details>
+      <details><summary>Je zameranie a návrh spoplatnený?<span class="pm"></span></summary><div class="acc-body">Nie. Zameranie a návrh dispozície sú súčasťou zákazky. Platíte až pri objednávke výroby, zálohu 50 %.</div></details>
       <details><summary>Viete pracovať podľa projektu architekta?<span class="pm"></span></summary><div class="acc-body">Áno. Výkresy prejdeme s architektom, technické detaily vyriešime vopred a pred výrobou pošleme dielenské výkresy na schválenie. Takto sme pracovali napríklad s ateliérmi gmb, Grau a TOITO Architekti.</div></details>
       <details><summary>Zvládnete starý dom so šikmými stenami?<span class="pm"></span></summary><div class="acc-body">Áno, staré byty a domy sú naša špecialita. Marek je stavebný inžinier, takže krivé steny, staré rozvody či trámy zohľadníme už pri zameraní.</div></details>
-      <details><summary>Kde pôsobíte a akú dávate záruku?<span class="pm"></span></summary><div class="acc-body">Pracujeme v Bratislave a okolí, väčšie zákazky aj inde na Slovensku. Na výrobu a montáž dávame záruku <span class="tbd">5</span> rokov.</div></details>
+      <details><summary>Kde pôsobíte a akú dávate záruku?<span class="pm"></span></summary><div class="acc-body">Pracujeme v Bratislave a okolí, väčšie zákazky aj inde na Slovensku. Na výrobu a montáž dávame záruku 5 rokov.</div></details>
       <details><summary>Stihnete termín k sťahovaniu?<span class="pm"></span></summary><div class="acc-body">Ak nám dáte vedieť včas, áno. Termín dohodneme pri objednávke a plánujeme výrobu tak, aby sedel s rekonštrukciou.</div></details>
       <details><summary>Robíte aj interiéry pre prevádzky?<span class="pm"></span></summary><div class="acc-body">Áno, napríklad hostel, infopult alebo prebaľovňu. Pri prevádzkach navrhujeme odolné materiály a jednoduchú údržbu.</div></details>
     </div>
@@ -492,22 +498,21 @@ body.lock { overflow: hidden; }
 <!-- modal realizácie -->
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title" hidden>
   <div class="modal-bar"><div class="wrap">
-    <button class="modal-close" id="m-close">← Späť na realizácie</button>
-    <div class="modal-nav"><button class="btn btn--ghost btn--sm" id="m-prev" aria-label="Predošlý projekt">←</button><button class="btn btn--ghost btn--sm" id="m-next" aria-label="Ďalší projekt">→</button></div>
+    <button class="modal-close" id="m-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Späť na realizácie</button>
   </div></div>
   <div class="wrap">
     <div class="modal-head">
       <div class="t"><p class="label label--orange" id="m-tag"></p><h2 id="m-title"></h2></div>
-      <div class="d"><p id="m-desc"></p><p class="small muted" id="m-src">Text z hantverk.sk – na redakciu.</p></div>
+      <div class="d"><p id="m-desc"></p></div>
     </div>
     <div class="modal-gal" id="m-gal"></div>
-    <div class="modal-cta"><p class="h3">Máte podobný priestor?</p><a class="btn" href="#kontakt" id="m-cta">Mám záujem</a></div>
+    <div class="modal-nav"><button id="m-prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Predchádzajúci projekt</button><button id="m-home">Späť na realizácie</button><button id="m-next">Ďalší projekt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div>
+    <div class="modal-cta"><a class="btn" href="#kontakt" id="m-cta">Mám záujem</a></div>
   </div>
 </div>
 
 <div class="lb" id="lb" aria-hidden="true"><img id="lb-img" alt=""><button class="x" id="lb-x">Zavrieť ✕</button><button class="p" id="lb-p" aria-label="Predošlá">‹</button><button class="n" id="lb-n" aria-label="Ďalšia">›</button><div class="c" id="lb-c"></div></div>
 
-<div class="proto" id="proto"><span class="pl">Prototyp ·</span> <span id="proto-t">údaje na overenie zvýraznené</span> <button id="proto-b">Skryť</button></div>
 
 <script>
 const IMG = 'assets/web/';
@@ -612,8 +617,10 @@ function openP(id) {
 }
 function closeP() { modal.classList.remove('open'); document.body.classList.remove('lock'); setTimeout(() => modal.hidden = true, 250); history.replaceState(null, '', location.pathname); lastFocus && lastFocus.focus({ preventScroll: true }); }
 document.addEventListener('click', e => { const t = e.target.closest('[data-open]'); if (t) { e.preventDefault(); openP(t.dataset.open); } });
-document.getElementById('m-close').onclick = closeP;
+const backToRefs = () => { closeP(); document.getElementById('referencie').scrollIntoView({ behavior: 'instant' }); };
+document.getElementById('m-close').onclick = backToRefs;
 document.getElementById('m-cta').onclick = () => closeP();
+document.getElementById('m-home').onclick = backToRefs;
 document.getElementById('m-prev').onclick = () => openP(P[(cur - 1 + P.length) % P.length].id);
 document.getElementById('m-next').onclick = () => openP(P[(cur + 1) % P.length].id);
 
@@ -650,13 +657,6 @@ Object.keys(navOf).forEach(id => { const s = document.getElementById(id); s && s
 /* reveal */
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
 document.querySelectorAll('.rv').forEach(el => io.observe(el));
-
-/* prepínač údajov na overenie */
-document.getElementById('proto-b').onclick = function () {
-  const h = document.body.classList.toggle('hide-tbd');
-  this.textContent = h ? 'Zobraziť' : 'Skryť';
-  document.getElementById('proto-t').textContent = h ? 'údaje na overenie skryté' : 'údaje na overenie zvýraznené';
-};
 
 /* deep link na projekt */
 if (location.hash.startsWith('#projekt-')) openP(location.hash.slice(9));
