@@ -659,6 +659,9 @@ Object.keys(navOf).forEach(id => { const s = document.getElementById(id); s && s
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
 document.querySelectorAll('.rv').forEach(el => io.observe(el));
 
+/* logo a „Hore“: hlavička je sticky, kotva #top by sa neposunula */
+document.querySelectorAll('a[href="#top"]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); scrollTo({ top: 0 }); }));
+
 /* deep link na projekt */
 if (location.hash.startsWith('#projekt-')) openP(location.hash.slice(9));
 </script>
