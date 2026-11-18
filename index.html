@@ -269,6 +269,10 @@ body.lock { overflow: hidden; }
       <a href="#postup">Postup</a>
       <a href="#otazky">Otázky</a>
     </nav>
+    <nav class="language-picker" aria-label="Jazyk stránky">
+      <a href="https://hantverk.sk/" lang="sk" hreflang="sk" data-language="sk" aria-label="Slovenčina" aria-current="page">SK</a>
+      <a href="https://hantverk.cz/" lang="cs" hreflang="cs" data-language="cs" aria-label="Čeština">CZ</a>
+    </nav>
     <a class="hdr-tel num" href="tel:+421907310039">+421 907 310 039</a>
     <a class="btn btn--sm" href="#kontakt">Mám záujem</a>
     <button class="burger" aria-label="Menu" aria-expanded="false"><span></span></button>
@@ -666,5 +670,6 @@ document.querySelectorAll('a[href="#top"]').forEach(a => a.addEventListener('cli
 if (location.hash.startsWith('#projekt-')) openP(location.hash.slice(9));
 </script>
 <script src="assets/contact.js" defer></script>
+<script src="assets/language.js" defer></script>
 </body>
 </html>

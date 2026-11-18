@@ -1,7 +1,10 @@
 Options -Indexes
+DirectoryIndex index.php index.html
 RewriteEngine On
+RewriteCond %{THE_REQUEST} \s/+index\.html(?:[?\s]) [NC]
+RewriteRule ^index\.html$ / [R=302,L]
 RewriteRule (^|/)\.deploy- - [F,L,NC]
-RewriteRule ^(?:\.git|vendor|deployment|tests)(?:/|$) - [F,L,NC]
+RewriteRule ^(?:\.git|vendor|deployment|tests|pages)(?:/|$) - [F,L,NC]
 <FilesMatch "^(?:composer\.(?:json|lock)|hantverk-mail\.php|\.env.*)$">
   Require all denied
 </FilesMatch>

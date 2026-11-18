@@ -15,7 +15,8 @@ Requires PHP 8.2+ with OpenSSL and Fileinfo, and Websupport web hosting
 4. In Websupport PHP settings set `upload_max_filesize` to `10M`,
    `post_max_size` to `12M`, and `max_file_uploads` to at least `5`.
    The application accepts up to five PDF/JPEG/PNG files, 10 MiB combined.
-5. Deploy index.html, assets/, contact.php, vendor/ and .htaccess together.
+5. Run `node deployment/build-site.cjs`, then deploy index.php, index.html, site.php,
+   pages/, assets/, contact.php, vendor/ and .htaccess together.
    Confirm Apache honors .htaccess; vendor/ and .git/ must return 403 or 404.
 6. On https://hantverk.sk, send a real test enquiry with an attachment, verify
    receipt at info@hantverk.sk and verify Reply goes to the visitor. Check invalid
@@ -33,3 +34,5 @@ They use a locked file in the server's temporary directory; verify the PHP worke
 can write there. No automatic confirmation email is sent to visitors.
 
 Before launch, replace the placeholder privacy policy link with the actual policy.
+
+For the language build and .cz domain setup, see [LANGUAGES.md](LANGUAGES.md).

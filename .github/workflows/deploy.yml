@@ -35,8 +35,12 @@ jobs:
 
       - name: Check code and install mail dependencies
         run: |
+          node deployment/build-site.cjs
           node --test tests/*.test.cjs
           php -l contact.php
+          php -l index.php
+          php -l site.php
+          php tests/language.test.php
           composer validate --no-check-publish
           composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-progress
           composer audit --no-dev
@@ -54,3 +58,4 @@ jobs:
         run: |
           curl --fail --silent --show-error --retry 3 --retry-delay 5 --retry-all-errors --max-time 30 https://hantverk.sk/ -o /tmp/hantverk-live.html
           grep -q 'assets/contact.js' /tmp/hantverk-live.html
+          grep -q '<html lang="sk">' /tmp/hantverk-live.html

@@ -51,7 +51,8 @@ function deploymentFiles(root) {
     }
   }
   // Explicit allowlist: secrets, Git files, archives and tooling never enter the upload.
-  for (const item of ['.htaccess', 'assets', 'vendor', 'contact.php', 'index.html']) visit(item);
+  for (const item of ['.htaccess', 'assets', 'vendor', 'site.php', 'pages', 'contact.php', 'index.html', 'index.php']) visit(item);
+  if (!files.includes('pages/sk.html') || !files.includes('pages/cs.html')) throw new Error('Run node deployment/build-site.cjs before deploying');
   if (!files.includes('vendor/autoload.php')) throw new Error('Run composer install before deploying');
   return files;
 }
@@ -100,7 +101,7 @@ async function deploy(client, root, credentials) {
         await client.cd(REMOTE_DIR);
         knownDirs.add(dir);
       }
-      // Publish complete files by rename; index.html is published last.
+      // Publish complete files by rename; index.php is published last.
       const temporary = path.posix.join(dir, `.deploy-${run}.tmp`);
       stage = `uploading ${relative}`;
       await client.uploadFrom(path.join(root, relative), temporary);

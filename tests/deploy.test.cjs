@@ -9,7 +9,7 @@ const { deploymentFiles, deploy, safeError, protocolTrace, fileHashes } = requir
 function fixture(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'hantverk-deploy-'));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
-  for (const name of ['.htaccess', 'contact.php', 'index.html', 'assets/style.css', 'vendor/autoload.php', '.env', 'hantverk-mail.php', 'deployment/archive.zip']) {
+  for (const name of ['.htaccess', 'site.php', 'contact.php', 'index.html', 'index.php', 'pages/sk.html', 'pages/cs.html', 'assets/style.css', 'vendor/autoload.php', '.env', 'hantverk-mail.php', 'deployment/archive.zip']) {
     fs.mkdirSync(path.dirname(path.join(root, name)), { recursive: true });
     fs.writeFileSync(path.join(root, name), 'test');
   }
@@ -18,7 +18,7 @@ function fixture(t) {
 
 test('only website files are selected; entry point is last', t => {
   const files = deploymentFiles(fixture(t));
-  assert.deepEqual(files, ['.htaccess', 'assets/style.css', 'vendor/autoload.php', 'contact.php', 'index.html']);
+  assert.deepEqual(files, ['.htaccess', 'assets/style.css', 'vendor/autoload.php', 'site.php', 'pages/cs.html', 'pages/sk.html', 'contact.php', 'index.html', 'index.php']);
 });
 
 test('missing mail dependency prevents deployment', t => {
@@ -56,7 +56,7 @@ test('uses FTPS and publishes complete files with index last', async t => {
     ['cd', '/new-site'],
   ]);
   const renames = client.calls.filter(call => call[0] === 'rename');
-  assert.equal(renames.at(-2)[2], 'index.html');
+  assert.equal(renames.at(-2)[2], 'index.php');
   assert.equal(renames.at(-1)[2], '.deploy-manifest.json');
   assert.equal(client.calls.some(call => call[0] === 'remove'), false);
   assert.equal(client.calls.at(-1)[0], 'close');

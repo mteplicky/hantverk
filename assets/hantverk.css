@@ -57,6 +57,15 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
+.language-picker { display: flex; flex: none; gap: 2px; padding: 2px; border: 1px solid var(--line); border-radius: 4px; }
+.language-picker a { display: grid; place-items: center; min-width: 34px; min-height: 40px; font-size: .78rem; font-weight: 600; text-decoration: none; color: var(--ink-2); border-radius: 2px; }
+.language-picker a[aria-current="page"] { background: var(--ink); color: var(--paper); }
+.language-picker a:hover { color: var(--orange); }
+@media (max-width: 520px) {
+  .hdr .wrap { gap: 8px; }
+  .hdr .language-picker { margin-left: auto; }
+  .hdr .btn { display: none; }
+}
 img { max-width: 100%; display: block; }
 a { color: inherit; }
 button, input, select, textarea { font: inherit; color: inherit; }

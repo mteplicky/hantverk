@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 
-function setup(fetch, selectedFiles = []) {
+function setup(fetch, selectedFiles = [], language = 'sk') {
   const button = { innerHTML: 'Odoslať', disabled: false };
   const error = { hidden: true };
   const success = { focus() {} };
@@ -20,7 +20,7 @@ function setup(fetch, selectedFiles = []) {
   };
   const elements = { form, 'f-file': files, 'form-error': error };
   vm.runInNewContext(fs.readFileSync('assets/contact.js', 'utf8'), {
-    document: { getElementById: id => elements[id] },
+    document: { getElementById: id => elements[id], documentElement: { lang: language } },
     fetch, FormData: class {}, SyntaxError, TypeError,
   });
   return { submit: () => submit({ preventDefault() {} }), classes, button, error };
@@ -71,4 +71,23 @@ test('duplicate submit does not send twice', async () => {
   assert.equal(calls, 1);
   complete({ ok: true, json: async () => ({ ok: true }) });
   await first;
+});
+
+test('Czech form shows Czech progress and network errors', async () => {
+  let complete;
+  const app = setup(() => new Promise((resolve, reject) => { complete = reject; }), [], 'cs');
+  const pending = app.submit();
+  assert.equal(app.button.textContent, 'Odesílám…');
+  complete(new TypeError('Failed to fetch'));
+  await pending;
+  assert.match(app.error.textContent, /^Zprávu se nepodařilo odeslat/);
+  assert.equal(app.classes.has('sent'), false);
+  assert.equal(app.button.disabled, false);
+});
+
+test('Czech attachment validation prevents oversized uploads', async () => {
+  const app = setup(() => assert.fail('must not send'), [{ size: 11 * 1024 * 1024 }], 'cs');
+  await app.submit();
+  assert.match(app.error.textContent, /^Přiložte nejvýše 5 souborů/);
+  assert.equal(app.error.hidden, false);
 });

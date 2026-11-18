@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 use PHPMailer\PHPMailer\PHPMailer;
 
+require_once __DIR__ . '/site.php';
+
 ini_set('display_errors', '0');
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -11,7 +13,7 @@ header('X-Content-Type-Options: nosniff');
 function respond(int $status, string $message): never
 {
     http_response_code($status);
-    echo json_encode(['ok' => $status === 200, 'message' => $message], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['ok' => $status === 200, 'message' => site_message($message, site_language($_SERVER['HTTP_HOST'] ?? ''))], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -36,7 +38,7 @@ if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 11 * 1024 * 1024) {
     respond(413, 'Prílohy môžu mať spolu najviac 10 MB.');
 }
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if ($origin !== '' && !in_array($origin, ['https://hantverk.sk', 'https://www.hantverk.sk'], true)) {
+if (!site_contact_origin_allowed($origin)) {
     respond(403, 'Formulár odošlite zo stránky hantverk.sk.');
 }
 if (field('website', 1000) !== '') {
@@ -140,8 +142,11 @@ try {
     $mail->addAddress('info@hantverk.sk');
     $mail->addAddress('mteplicky@gmail.com');
     $mail->addReplyTo($email, $name);
-    $mail->Subject = 'Nový dopyt z hantverk.sk';
-    $mail->Body = "Meno: $name\nE-mail: $email\nTelefón: $phone\nSituácia: $situation\n\n$message";
+    $language = site_language($_SERVER['HTTP_HOST'] ?? '');
+    $domain = $language === 'cs' ? 'hantverk.cz' : 'hantverk.sk';
+    $mail->Subject = $language === 'cs' ? 'Nová poptávka z hantverk.cz' : 'Nový dopyt z hantverk.sk';
+    $labels = $language === 'cs' ? ['Jméno', 'Telefon', 'Situace'] : ['Meno', 'Telefón', 'Situácia'];
+    $mail->Body = "Web: https://$domain/\nJazyk: $language\n{$labels[0]}: $name\nE-mail: $email\n{$labels[1]}: $phone\n{$labels[2]}: $situation\n\n$message";
     foreach ($attachments as [$tmp, $filename, $mime]) {
         $mail->addAttachment($tmp, $filename, 'base64', $mime);
     }
